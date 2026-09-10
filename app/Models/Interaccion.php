@@ -13,10 +13,10 @@ class Interaccion extends Model
 
     protected $fillable = [
         'cliente_id',
-        'usuario_id',
         'tipo',
         'descripcion',
         'fecha',
+        'usuario_id',
     ];
 
     public function cliente()

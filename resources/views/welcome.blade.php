@@ -744,8 +744,7 @@
         <main class="flex-1 p-6 md:p-10 overflow-y-auto">
             <div class="mb-8 flex justify-between items-end border-b border-gray-200 pb-4">
                 <h1 class="text-3xl md:text-4xl font-black uppercase tracking-tight" x-text="adminTab"></h1>
-                <button class="bg-black text-white px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition">+ Nuevo</button>
-            </div>
+<a href="{{ route('clientes.create') }}" class="btn btn-dark text-uppercase fw-bold px-4 py-2">+ NUEVO</a>            </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" x-show="adminTab === 'pedidos' || adminTab === 'clientes' || adminTab === 'facturas'">
                 <div class="bg-white p-6 border border-gray-200 shadow-sm">
@@ -826,31 +825,52 @@
 
             <div x-show="adminTab === 'clientes'" class="bg-white border border-gray-200 shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead class="bg-gray-50 text-[10px] font-bold uppercase tracking-wider text-gray-500 border-b border-gray-200">
-                            <tr>
-                                <th class="px-6 py-4">Usuario</th>
-                                <th class="px-6 py-4">Email</th>
-                                <th class="px-6 py-4">Pedidos</th>
-                                <th class="px-6 py-4">Gasto Total</th>
-                                <th class="px-6 py-4">Nivel</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            <template x-for="cliente in adminUsersList" :key="cliente.email">
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 text-sm font-bold uppercase" x-text="cliente.name"></td>
-                                    <td class="px-6 py-4 text-xs text-gray-500" x-text="cliente.email"></td>
-                                    <td class="px-6 py-4 text-sm font-mono font-bold" x-text="cliente.orders"></td>
-                                    <td class="px-6 py-4 text-sm font-mono font-bold text-green-600" x-text="'$' + cliente.spent.toLocaleString()"></td>
-                                    <td class="px-6 py-4">
-                                        <span :class="cliente.status === 'VIP' ? 'bg-black text-white' : (cliente.status === 'Activo' ? 'bg-gray-200 text-black' : 'bg-red-100 text-red-700')" class="px-2 py-1 text-[9px] font-bold uppercase tracking-widest rounded-sm" x-text="cliente.status"></span>
-                                    </td>
-                                </tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
+    <table class="w-full text-left">
+        <thead class="bg-gray-50 text-[10px] font-bold uppercase tracking-wider text-gray-500 border-b">
+            <tr>
+                <th class="px-6 py-4">Usuario</th>
+                <th class="px-6 py-4">Email</th>
+                <th class="px-6 py-4">Teléfono</th>
+                <th class="px-6 py-4">Etapa CRM</th>
+                <th class="px-6 py-4">Estado</th>
+                <th class="px-6 py-4 text-right">Acciones</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            @forelse($clientes as $cliente)
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 font-bold">{{ $cliente->nombre }}</td>
+                    <td class="px-6 py-4 text-gray-500">{{ $cliente->correo }}</td>
+                    <td class="px-6 py-4 text-gray-500">{{ $cliente->telefono ?? 'N/A' }}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 text-xs font-semibold rounded bg-gray-100 text-gray-800">
+                            {{ $cliente->etapa_crm }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 text-xs font-semibold rounded {{ $cliente->estado == 'activo' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600' }}">
+                            {{ strtoupper($cliente->estado) }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-right space-x-2">
+                        <a href="{{ route('clientes.show', $cliente->id) }}" class="inline-block px-3 py-1 bg-black text-white text-xs font-bold rounded hover:bg-gray-800 transition">
+                            HISTORIAL
+                        </a>
+                        <a href="{{ route('clientes.edit', $cliente->id) }}" class="inline-block px-3 py-1 border border-gray-300 text-gray-700 text-xs font-bold rounded hover:bg-gray-100 transition">
+                            EDITAR
+                        </a>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="6" class="px-6 py-8 text-center text-gray-400">
+                        No hay clientes registrados en la base de datos.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
             </div>
 
             <div x-show="adminTab === 'facturas'" class="bg-white border border-gray-200 shadow-sm overflow-hidden">

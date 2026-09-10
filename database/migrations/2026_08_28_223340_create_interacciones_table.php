@@ -11,10 +11,10 @@ return new class extends Migration
         Schema::create('interacciones', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
-            $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
             $table->enum('tipo', ['llamada', 'correo', 'reunion']);
             $table->text('descripcion');
             $table->timestamp('fecha')->useCurrent();
+            $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

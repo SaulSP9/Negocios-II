@@ -14,7 +14,6 @@ return new class extends Migration
             $table->string('correo')->unique();
             $table->string('telefono')->nullable();
             $table->string('empresa')->nullable();
-            $table->date('fecha_registro')->useCurrent();
             $table->enum('estado', ['activo', 'inactivo'])->default('activo');
             $table->enum('etapa_crm', ['Prospecto', 'Activo', 'Frecuente', 'Inactivo'])->default('Prospecto');
             $table->timestamps();

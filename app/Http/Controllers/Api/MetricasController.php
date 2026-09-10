@@ -4,32 +4,24 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cliente;
-use Carbon\Carbon;
+use App\Models\Interaccion;
 
 class MetricasController extends Controller
 {
-    public function index()
+    public function dashboard()
     {
         $totalClientes = Cliente::count();
-        $activos = Cliente::where('estado', 'activo')->count();
-        $inactivos = Cliente::where('estado', 'inactivo')->count();
+        $totalInteracciones = Interaccion::count();
+        $clientesRecientes = Cliente::latest()->take(5)->get();
 
-        $interaccionesPorCliente = Cliente::withCount('interacciones')
-            ->get(['id', 'nombre', 'interacciones_count']);
+        return view('admin.dashboard', compact('totalClientes', 'totalInteracciones', 'clientesRecientes'));
+    }
 
-        $haceUnMes = Carbon::now()->subDays(30);
-        $clientesEnRiesgo = Cliente::whereDoesntHave('interacciones', function ($query) use ($haceUnMes) {
-            $query->where('fecha', '>=', $haceUnMes);
-        })->get(['id', 'nombre', 'correo', 'etapa_crm']);
-
+    public function getMetricas()
+    {
         return response()->json([
-            'total_clientes' => $totalClientes,
-            'activos_vs_inactivos' => [
-                'activos' => $activos,
-                'inactivos' => $inactivos,
-            ],
-            'interacciones_por_cliente' => $interaccionesPorCliente,
-            'clientes_en_riesgo' => $clientesEnRiesgo,
+            'total_clientes' => Cliente::count(),
+            'total_interacciones' => Interaccion::count(),
         ]);
     }
 }

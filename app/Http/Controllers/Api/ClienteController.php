@@ -8,82 +8,132 @@ use Illuminate\Http\Request;
 
 class ClienteController extends Controller
 {
+    /**
+     * Muestra la lista general de clientes y métricas
+     */
     public function index(Request $request)
     {
-        $query = Cliente::query();
+        $clientes = Cliente::withCount('interacciones')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
-        if ($request->filled('buscar')) {
-            $query->where('nombre', 'like', '%' . $request->buscar . '%')
-                  ->orWhere('correo', 'like', '%' . $request->buscar . '%')
-                  ->orWhere('empresa', 'like', '%' . $request->buscar . '%');
+        $totalClientes = Cliente::count();
+        $clientesActivos = Cliente::where('estado', 'activo')->count();
+        $totalPedidosActivos = 45; // Dato estático o relación con modelos de pedidos
+
+        if ($request->wantsJson()) {
+            return response()->json($clientes);
         }
 
-        if ($request->filled('estado')) {
-            $query->where('estado', $request->estado);
-        }
-
-        if ($request->filled('etapa_crm')) {
-            $query->where('etapa_crm', $request->etapa_crm);
-        }
-
-        return response()->json($query->get());
+        return view('admin.clientes.index', compact('clientes', 'totalClientes', 'clientesActivos', 'totalPedidosActivos'));
     }
 
+    /**
+     * Formulario para crear un nuevo cliente
+     */
+    public function create()
+    {
+        return view('admin.clientes.create');
+    }
+
+    /**
+     * Guarda un nuevo cliente en la base de datos
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'correo' => 'required|email|unique:clientes,correo',
-            'telefono' => 'nullable|string|max:20',
-            'empresa' => 'nullable|string|max:255',
-            'estado' => 'in:activo,inactivo',
-            'etapa_crm' => 'in:Prospecto,Activo,Frecuente,Inactivo',
+            'nombre'    => 'required|string|max:255',
+            'correo'    => 'required|email|unique:clientes,correo',
+            'telefono'  => 'nullable|string|max:20',
+            'empresa'   => 'nullable|string|max:255',
+            'estado'    => 'required|in:activo,inactivo',
+            'etapa_crm' => 'required|in:Prospecto,Activo,Frecuente,Inactivo',
         ]);
 
         $cliente = Cliente::create($validated);
-        return response()->json($cliente, 201);
+
+        if ($request->wantsJson()) {
+            return response()->json($cliente, 201);
+        }
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente registrado correctamente.');
     }
 
-    public function show($id)
+    /**
+     * Muestra el detalle e historial de interacciones de un cliente
+     */
+    public function show(Request $request, $id)
     {
-        $cliente = Cliente::with('interacciones.usuario')->findOrFail($id);
-        return response()->json($cliente);
+        $cliente = Cliente::with(['interacciones.usuario'])->findOrFail($id);
+
+        if ($request->wantsJson()) {
+            return response()->json($cliente);
+        }
+
+        return view('admin.clientes.show', compact('cliente'));
     }
 
+    /**
+     * Formulario para editar un cliente
+     */
+    public function edit($id)
+    {
+        $cliente = Cliente::findOrFail($id);
+        return view('admin.clientes.edit', compact('cliente'));
+    }
+
+    /**
+     * Actualiza la información de un cliente
+     */
     public function update(Request $request, $id)
     {
         $cliente = Cliente::findOrFail($id);
 
         $validated = $request->validate([
-            'nombre' => 'sometimes|string|max:255',
-            'correo' => 'sometimes|email|unique:clientes,correo,' . $id,
-            'telefono' => 'nullable|string|max:20',
-            'empresa' => 'nullable|string|max:255',
-            'estado' => 'in:activo,inactivo',
-            'etapa_crm' => 'in:Prospecto,Activo,Frecuente,Inactivo',
+            'nombre'    => 'required|string|max:255',
+            'correo'    => 'required|email|unique:clientes,correo,' . $id,
+            'telefono'  => 'nullable|string|max:20',
+            'empresa'   => 'nullable|string|max:255',
+            'estado'    => 'required|in:activo,inactivo',
+            'etapa_crm' => 'required|in:Prospecto,Activo,Frecuente,Inactivo',
         ]);
 
         $cliente->update($validated);
-        return response()->json($cliente);
+
+        if ($request->wantsJson()) {
+            return response()->json($cliente);
+        }
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
     }
 
-    public function destroy($id)
+    /**
+     * Elimina un cliente
+     */
+    public function destroy(Request $request, $id)
     {
         $cliente = Cliente::findOrFail($id);
         $cliente->delete();
-        return response()->json(['message' => 'Cliente eliminado correctamente']);
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Cliente eliminado correctamente.']);
+        }
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente eliminado.');
     }
 
-    public function cambiarEtapa(Request $request, $id)
+    /**
+     * Actualiza únicamente la etapa del CRM
+     */
+    public function updateEtapa(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'etapa_crm' => 'required|in:Prospecto,Activo,Frecuente,Inactivo',
         ]);
 
         $cliente = Cliente::findOrFail($id);
-        $cliente->etapa_crm = $request->etapa_crm;
-        $cliente->save();
+        $cliente->update($validated);
 
-        return response()->json($cliente);
+        return response()->json(['message' => 'Etapa actualizada correctamente', 'cliente' => $cliente]);
     }
 }
