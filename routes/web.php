@@ -1,26 +1,43 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ClienteController;
-use App\Http\Controllers\Api\InteraccionController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\Api\MetricasController;
-use App\Models\Cliente;
+use App\Http\Controllers\InteraccionController;
 
-// Ruta principal
-Route::get('/', function () {
-    $clientes = Cliente::all();
-    return view('welcome', compact('clientes'));
-})->name('tienda');
 
-// CRUD de Clientes (público / libre para pruebas)
-Route::resource('clientes', ClienteController::class);
-Route::put('/clientes/{id}/etapa', [ClienteController::class, 'updateEtapa'])->name('clientes.updateEtapa');
-
-// Interacciones e historial
+// Ruta para procesar el formulario de nueva interacción
 Route::post('/interacciones', [InteraccionController::class, 'store'])->name('interacciones.store');
-Route::get('/mi-actividad', [InteraccionController::class, 'byCliente'])->name('interacciones.miActividad');
 
-// Rutas autenticadas (Dashboard)
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [MetricasController::class, 'dashboard'])->name('admin.dashboard');
+// Ruta para la vista "Mi Actividad" (disponible para todos los autenticados)
+Route::get('/mi-actividad', [InteraccionController::class, 'miActividad'])->name('mi_actividad');
+// ...
+
+Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [MetricasController::class, 'index'])->name('dashboard');
+});
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+// Rutas de autenticación
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Rutas protegidas
+Route::middleware('auth')->group(function () {
+    
+    // Rutas para cualquier usuario autenticado
+    Route::resource('clientes', ClienteController::class);
+    // Añade esta línea justo debajo de Route::resource('clientes', ...)
+    Route::put('/clientes/{id}/etapa', [App\Http\Controllers\ClienteController::class, 'actualizarEtapa'])->name('clientes.etapa');
+    
+    // Rutas exclusivas para administradores
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+        // Ahora la ruta pasa por el controlador antes de abrir la vista
+        Route::get('/dashboard', [MetricasController::class, 'index'])->name('dashboard');
+    });
 });

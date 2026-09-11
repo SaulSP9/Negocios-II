@@ -4,27 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cliente extends Model
 {
     use HasFactory;
-
-    protected $table = 'clientes';
 
     protected $fillable = [
         'nombre',
         'correo',
         'telefono',
         'empresa',
+        'fecha_registro',
         'estado',
-        'etapa_crm'
+        'etapa_crm',
     ];
 
-    /**
-     * Relación con las interacciones del cliente
-     */
-    public function interacciones()
+    public function interacciones(): HasMany
     {
-        return $this->hasMany(Interaccion::class, 'cliente_id')->orderBy('fecha', 'desc');
+        return $this->hasMany(Interaccion::class);
     }
 }

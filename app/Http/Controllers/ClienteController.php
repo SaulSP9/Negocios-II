@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cliente;
@@ -166,5 +166,30 @@ class ClienteController extends Controller
         }
 
         return response()->json(['message' => 'Cliente eliminado correctamente'], 200);
+    }
+    /**
+     * Actualiza la etapa CRM del cliente.
+     */
+    public function actualizarEtapa(Request $request, $id)
+    {
+        $request->validate([
+            'etapa_crm' => 'required|in:Prospecto,Activo,Frecuente,Inactivo'
+        ]);
+
+        $cliente = \App\Models\Cliente::findOrFail($id);
+        $cliente->etapa_crm = $request->etapa_crm;
+        $cliente->save();
+
+        // Si la petición viene de la API, devolvemos JSON
+        if ($request->wantsJson()) {
+            return response()->json([
+                'message' => 'Etapa CRM actualizada correctamente',
+                'cliente' => $cliente
+            ]);
+        }
+
+        // Si es una petición web, redirigimos a la vista con un mensaje de éxito
+        return redirect()->route('clientes.show', $cliente->id)
+                         ->with('success', 'La etapa del cliente se ha actualizado correctamente.');
     }
 }

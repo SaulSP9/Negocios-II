@@ -1,98 +1,84 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HF.ADMIN - Panel de Control</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #f8f9fa; }
-        .sidebar { width: 260px; min-height: 100vh; background-color: #000; color: #fff; }
-        .sidebar .nav-link { color: #aaa; font-weight: bold; padding: 12px 20px; }
-        .sidebar .nav-link.active, .sidebar .nav-link:hover { color: #fff; background-color: #222; }
-        .card-stat { border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    </style>
-</head>
-<body>
+@extends('layouts.app')
 
-<div class="d-flex">
-    <!-- BARRA LATERAL (SIDEBAR) -->
-    <div class="sidebar d-flex flex-column justify-content-between p-3">
-        <div>
-            <h3 class="fw-bold text-white mb-0">HF.ADMIN</h3>
-            <small class="text-secondary d-block mb-4">HOLA, {{ strtoupper(Auth::user()->name ?? 'USUARIO') }}</small>
-            
-            <nav class="nav flex-column">
-                <a class="nav-link active mb-2" href="{{ route('admin.dashboard') }}">📊 DASHBOARD</a>
-                <a class="nav-link mb-2" href="{{ route('clientes.index') }}">👥 CLIENTES</a>
-            </nav>
+@section('content')
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Dashboard CRM</h1>
+
+    <!-- Tarjetas de Contadores -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Tarjeta 1 -->
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+            <h2 class="text-gray-500 text-sm font-semibold uppercase tracking-wide">Total Clientes</h2>
+            <p class="text-3xl font-bold text-gray-800 mt-2">{{ $totalClientes }}</p>
         </div>
-
-        <!-- BOTONES DE ACCIÓN FUNCIONALES -->
-        <div class="d-grid gap-2 mt-auto">
-            <a href="{{ route('tienda') }}" class="btn btn-outline-light w-100 fw-bold py-2">
-                VER TIENDA
-            </a>
-
-            <form method="POST" action="{{ route('logout') }}" class="m-0">
-                @csrf
-                <button type="submit" class="btn btn-danger w-100 fw-bold py-2">
-                    CERRAR SESIÓN
-                </button>
-            </form>
+        
+        <!-- Tarjeta 2 -->
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+            <h2 class="text-gray-500 text-sm font-semibold uppercase tracking-wide">Clientes Activos</h2>
+            <p class="text-3xl font-bold text-gray-800 mt-2">{{ $clientesActivos }}</p>
+        </div>
+        
+        <!-- Tarjeta 3 -->
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-gray-400">
+            <h2 class="text-gray-500 text-sm font-semibold uppercase tracking-wide">Clientes Inactivos</h2>
+            <p class="text-3xl font-bold text-gray-800 mt-2">{{ $clientesInactivos }}</p>
+        </div>
+        
+        <!-- Tarjeta 4 -->
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
+            <h2 class="text-gray-500 text-sm font-semibold uppercase tracking-wide">Promedio Interacciones</h2>
+            <p class="text-3xl font-bold text-gray-800 mt-2">{{ $promedioInteracciones }}</p>
         </div>
     </div>
 
-    <!-- CONTENIDO PRINCIPAL DEL DASHBOARD -->
-    <div class="flex-grow-1 p-4">
-        <h2 class="fw-bold mb-4">Panel del Sistema CRM</h2>
-
-        <!-- TARJETAS DE MÉTRICAS -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-4">
-                <div class="card card-stat bg-white p-3 border-start border-primary border-4">
-                    <span class="text-muted fw-bold">TOTAL CLIENTES</span>
-                    <h2 class="fw-bold text-dark mt-2 mb-0">{{ $totalClientes ?? 0 }}</h2>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card card-stat bg-white p-3 border-start border-success border-4">
-                    <span class="text-muted fw-bold">INTERACCIONES</span>
-                    <h2 class="fw-bold text-dark mt-2 mb-0">{{ $totalInteracciones ?? 0 }}</h2>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card card-stat bg-white p-3 border-start border-warning border-4">
-                    <span class="text-muted fw-bold">ETAPAS ACTIVAS</span>
-                    <h2 class="fw-bold text-dark mt-2 mb-0">4</h2>
-                </div>
+    <!-- Sección de Gráfica y Tabla -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Gráfica de Pastel (Chart.js) -->
+        <div class="bg-white p-6 rounded-lg shadow-md lg:col-span-1">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Estado de Clientes</h3>
+            <div class="relative h-64">
+                <canvas id="clientesChart"></canvas>
             </div>
         </div>
 
-        <!-- TABLA DE ULTIMOS CLIENTES -->
-        <div class="card card-stat bg-white p-4">
-            <h5 class="fw-bold mb-3">Últimos Clientes Registrados</h5>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
+        <!-- Tabla Clientes en Riesgo -->
+        <div class="bg-white p-6 rounded-lg shadow-md lg:col-span-2">
+            <h3 class="text-lg font-bold text-red-600 mb-4 border-b pb-2">
+                <svg class="w-5 h-5 inline-block mr-1 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                Clientes en Riesgo (+30 días)
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-left text-sm whitespace-nowrap">
+                    <thead class="uppercase tracking-wider border-b-2 bg-gray-50 text-gray-600">
                         <tr>
-                            <th>Nombre</th>
-                            <th>Correo</th>
-                            <th>Etapa CRM</th>
-                            <th>Acción</th>
+                            <th class="px-6 py-3">ID</th>
+                            <th class="px-6 py-3">Nombre</th>
+                            <th class="px-6 py-3">Teléfono</th>
+                            <th class="px-6 py-3">Etapa CRM</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @forelse($clientesRecientes ?? [] as $cliente)
-                            <tr>
-                                <td>{{ $cliente->nombre }}</td>
-                                <td>{{ $cliente->email }}</td>
-                                <td><span class="badge bg-info text-dark">{{ $cliente->etapa }}</span></td>
-                                <td><a href="{{ route('clientes.show', $cliente->id) }}" class="btn btn-sm btn-dark">Ver Historial</a></td>
+                    <tbody class="text-gray-700">
+                        @forelse($clientesEnRiesgo as $cliente)
+                            <tr class="border-b hover:bg-gray-50 transition">
+                                <td class="px-6 py-4">{{ $cliente->id }}</td>
+                                <td class="px-6 py-4 font-semibold text-gray-800">{{ $cliente->nombre }}</td>
+                                <td class="px-6 py-4">{{ $cliente->telefono }}</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-1 rounded text-xs font-bold text-white uppercase 
+                                        {{ $cliente->etapa_crm === 'Prospecto' ? 'bg-blue-500' : '' }}
+                                        {{ $cliente->etapa_crm === 'Activo' ? 'bg-green-500' : '' }}
+                                        {{ $cliente->etapa_crm === 'Frecuente' ? 'bg-purple-500' : '' }}
+                                        {{ $cliente->etapa_crm === 'Inactivo' ? 'bg-gray-500' : '' }}">
+                                        {{ $cliente->etapa_crm }}
+                                    </span>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center text-muted py-3">No hay clientes registrados en el sistema.</td>
+                                <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                                    No hay clientes en riesgo en este momento.
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -102,5 +88,32 @@
     </div>
 </div>
 
-</body>
-</html>
+<!-- Script para inicializar Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('clientesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Activos', 'Inactivos'],
+                datasets: [{
+                    data: [{{ $clientesActivos }}, {{ $clientesInactivos }}],
+                    backgroundColor: ['#10B981', '#9CA3AF'], // Colores Tailwind: Emerald-500 y Gray-400
+                    hoverBackgroundColor: ['#059669', '#6B7280'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+    });
+</script>
+@endsection

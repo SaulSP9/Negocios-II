@@ -836,39 +836,7 @@
                 <th class="px-6 py-4 text-right">Acciones</th>
             </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100">
-            @forelse($clientes as $cliente)
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-6 py-4 font-bold">{{ $cliente->nombre }}</td>
-                    <td class="px-6 py-4 text-gray-500">{{ $cliente->correo }}</td>
-                    <td class="px-6 py-4 text-gray-500">{{ $cliente->telefono ?? 'N/A' }}</td>
-                    <td class="px-6 py-4">
-                        <span class="px-2 py-1 text-xs font-semibold rounded bg-gray-100 text-gray-800">
-                            {{ $cliente->etapa_crm }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="px-2 py-1 text-xs font-semibold rounded {{ $cliente->estado == 'activo' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600' }}">
-                            {{ strtoupper($cliente->estado) }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-right space-x-2">
-                        <a href="{{ route('clientes.show', $cliente->id) }}" class="inline-block px-3 py-1 bg-black text-white text-xs font-bold rounded hover:bg-gray-800 transition">
-                            HISTORIAL
-                        </a>
-                        <a href="{{ route('clientes.edit', $cliente->id) }}" class="inline-block px-3 py-1 border border-gray-300 text-gray-700 text-xs font-bold rounded hover:bg-gray-100 transition">
-                            EDITAR
-                        </a>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="6" class="px-6 py-8 text-center text-gray-400">
-                        No hay clientes registrados en la base de datos.
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
+
     </table>
 </div>
             </div>

@@ -6,15 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
+public function up(): void
     {
         Schema::create('interacciones', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
+            $table->foreignId('usuario_id')->nullable()->constrained('users')->onDelete('set null');
             $table->enum('tipo', ['llamada', 'correo', 'reunion']);
             $table->text('descripcion');
-            $table->timestamp('fecha')->useCurrent();
-            $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
+            $table->date('fecha');
             $table->timestamps();
         });
     }
