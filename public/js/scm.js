@@ -8,13 +8,27 @@
     const keys = new WeakMap();
     let noticeTimer;
     function notice(text, error = false) {
-        const el = $('#notice'); el.textContent = text; el.classList.toggle('error', error); el.hidden = false;
+        document.querySelectorAll('.dialog-notice').forEach(n => n.hidden = true);
+        const dialog = document.querySelector('dialog[open]');
+        let el = $('#notice');
+        if (dialog) {
+            el = dialog.querySelector('.dialog-notice');
+            if (!el) {
+                el = document.createElement('p');
+                el.className = 'dialog-notice';
+                el.setAttribute('role', 'alert');
+                const form = dialog.querySelector('form');
+                if (form) form.before(el); else dialog.append(el);
+            }
+            el.style.cssText = error ? 'color:#b00020;font-weight:600;margin:0 0 12px' : 'margin:0 0 12px';
+        }
+        el.textContent = text; el.classList.toggle('error', error); el.hidden = false;
         clearTimeout(noticeTimer); noticeTimer = setTimeout(() => el.hidden = true, error ? 12000 : 6000);
     }
     async function action(element, fn) {
         if (element?.dataset.busy) return;
         if (element) {element.dataset.busy = '1'; element.disabled = true;}
-        try {await fn();} catch (e) {notice(e.message, true);} finally {if (element) {delete element.dataset.busy; element.disabled = false;}}
+        try {await fn();} catch (e) {console.error(e); notice(e.message || 'No se pudo completar la operación. Revisa la consola (F12).', true);} finally {if (element) {delete element.dataset.busy; element.disabled = false;}}
     }
     function tab(id) {
         document.querySelectorAll('.panel').forEach(el => el.hidden = el.id !== id);
@@ -118,19 +132,30 @@
         });
     });
     document.addEventListener('submit', e => {
-        const form=e.target; e.preventDefault(); const b=e.submitter||form.querySelector('button[type="submit"],button.primary,button:not([type])');
+        const form = e.target;
+        e.preventDefault();
+        // IMPORTANTE: los formularios con <input name="id"> tapan la propiedad form.id,
+        // por eso se lee el atributo con getAttribute.
+        const formId = form.getAttribute('id');
+        const b = e.submitter || form.querySelector('button[type="submit"], button.primary, button:not([type]), button');
         action(b, async()=>{
-            const d=values(form);
-            if(form.id==='product-filter') await loadProducts(1);
-            else if(form.id==='order-filter') await loadOrders(1);
-            else if(form.id==='product-form') {
+            const d = values(form);
+            if(formId==='product-filter') await loadProducts(1);
+            else if(formId==='order-filter') await loadOrders(1);
+            else if(formId==='product-form') {
                 const id=d.id; delete d.id; d.activo=field(form,'activo').checked; d.proveedor_id=d.proveedor_id?Number(d.proveedor_id):null;
                 ['stock_actual','stock_minimo','stock_objetivo','costo_unitario','precio_venta'].forEach(k=>{if(k in d)d[k]=Number(d[k]);});
                 await HF.request(id?'/productos/'+id:'/productos',id?'PUT':'POST',d);close('#product-dialog');await refreshInventory();notice('Producto guardado.');
-            } else if(form.id==='supplier-form') {const id=d.id;delete d.id;await HF.request(id?'/proveedores/'+id:'/proveedores',id?'PUT':'POST',d);close('#supplier-dialog');await Promise.all([loadSuppliers(),loadProducts()]);notice('Proveedor guardado.');}
-            else if(form.id==='movement-form') {d.producto_id=Number(d.producto_id);d.cantidad=Number(d.cantidad);d.request_key=requestKey(form);await HF.request('/inventario/movimiento','POST',d);keys.delete(form);field(form,'cantidad').value='';field(form,'referencia').value='';await Promise.all([loadHistory(1),refreshInventory()]);notice('Movimiento registrado.');}
-            else if(form.id==='order-form') {d.producto_id=Number(d.producto_id);d.cantidad=Number(d.cantidad);d.request_key=requestKey(form);await HF.request('/pedidos','POST',d);keys.delete(form);close('#order-dialog');await Promise.all([loadOrders(1),loadReports()]);notice('Pedido generado. Recíbelo desde la lista cuando esté surtido.');}
-            else if(form.id==='maturity-form' && admin) {const checklist={};['catalogo','proveedores','inventario','estrategias','pedidos','reportes'].forEach(k=>checklist[k]=field(form,k).checked);await HF.request('/scm/nivel','PUT',{nivel_scm:d.nivel_scm,checklist});await loadMaturity();notice('Nivel SCM guardado.');}
+            } else if(formId==='supplier-form') {
+                const id=d.id; delete d.id;
+                await HF.request(id?'/proveedores/'+id:'/proveedores',id?'PUT':'POST',d);
+                close('#supplier-dialog');
+                await Promise.all([loadSuppliers(),loadProducts()]);
+                notice('Proveedor guardado.');
+            }
+            else if(formId==='movement-form') {d.producto_id=Number(d.producto_id);d.cantidad=Number(d.cantidad);d.request_key=requestKey(form);await HF.request('/inventario/movimiento','POST',d);keys.delete(form);field(form,'cantidad').value='';field(form,'referencia').value='';await Promise.all([loadHistory(1),refreshInventory()]);notice('Movimiento registrado.');}
+            else if(formId==='order-form') {d.producto_id=Number(d.producto_id);d.cantidad=Number(d.cantidad);d.request_key=requestKey(form);await HF.request('/pedidos','POST',d);keys.delete(form);close('#order-dialog');await Promise.all([loadOrders(1),loadReports()]);notice('Pedido generado. Recíbelo desde la lista cuando esté surtido.');}
+            else if(formId==='maturity-form' && admin) {const checklist={};['catalogo','proveedores','inventario','estrategias','pedidos','reportes'].forEach(k=>checklist[k]=field(form,k).checked);await HF.request('/scm/nivel','PUT',{nivel_scm:d.nivel_scm,checklist});await loadMaturity();notice('Nivel SCM guardado.');}
         });
     });
     // Una edición del formulario inicia una nueva operación; un reintento sin cambios conserva la clave.
