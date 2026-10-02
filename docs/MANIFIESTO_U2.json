@@ -1,0 +1,366 @@
+{
+  "base_repository": "https://github.com/henryknot6/HFSTUDIOS",
+  "base_commit": "f380aefba6cccca39a594290b92144d5e7852421",
+  "requirements": "Distribución por etapas_U2.pdf, etapas 1 CRM y 2 SCM",
+  "created": "2026-10-02",
+  "files": [
+    {
+      "path": ".env.example",
+      "action_original": "Reemplazar completo",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "51ab93dab85c94b179dd3e6f7c8a30fea97791ba05454c582b0d050c5a75a456"
+    },
+    {
+      "path": "app/Console/Commands/CreateStaff.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "2cc54d1500a3922866228cc0b7bb03fffa1b5bd29171faae4548f6e5494ae8c6"
+    },
+    {
+      "path": "app/Http/Controllers/AuthController.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "cbd14db4fe811041ec43cc5a472afa7db2731b6f1cee9ddd5be90a0018aab872"
+    },
+    {
+      "path": "app/Http/Controllers/CrmController.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "29ec3d718bebcafff3f9a65f4c1b19ac7bb22ff0c8d3d88068cc1edb883c27af"
+    },
+    {
+      "path": "app/Http/Controllers/ScmController.php",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "c0b95277c694fc85ac0bc1abb74d054167decbdd373233d8e474024d319297d0"
+    },
+    {
+      "path": "app/Http/Controllers/StoreController.php",
+      "action_original": "Crear",
+      "action_u2": "Reemplazar completo",
+      "u2": true,
+      "sha256": "13d76f3b3d336b1e93f44b6283ae71d4e5024fe045d056674598ef7fd70650e7"
+    },
+    {
+      "path": "app/Http/Middleware/RequireRole.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "319dfe6d6f35cb6e9bbcdbdba149b19e08c5ea117779bd4fd9834022ce8295aa"
+    },
+    {
+      "path": "app/Http/Requests/ClienteRequest.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "30bf5fec26bf4b622dfadb37991880b570de05a72936603b627b634c0c71936b"
+    },
+    {
+      "path": "app/Http/Requests/InteraccionRequest.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "350e1c5bd57a27f576087fed71ff1d592ba32b911fa9da0f613e9de08bf1fb1d"
+    },
+    {
+      "path": "app/Http/Requests/ScmProductRequest.php",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "f5aed497900f70687b20d0b490c1a00fba166f33a67772263c3b4ecd2e928045"
+    },
+    {
+      "path": "app/Models/Auction.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "a47ebe18c9e3058ece7474fa840cee29ecf1b988893120b43be844d63d8ccfa9"
+    },
+    {
+      "path": "app/Models/Cliente.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "222243a909ca1496ba3aa85769dff911636c47fdcfcf2a07231e88507da02ba5"
+    },
+    {
+      "path": "app/Models/Evaluacion.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "7cbc4454037fca44597c0fefa6ede2f4fa16eb1dcf71125303802219e9ac66eb"
+    },
+    {
+      "path": "app/Models/Interaccion.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "1308d4083fa240de5c44d2d2fa809d73807c2631063494ba6b514d65b80163a8"
+    },
+    {
+      "path": "app/Models/Inventario.php",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "524246abefe8412963b641038b9160e3d0943f5fb471d9000d0df32969b7c947"
+    },
+    {
+      "path": "app/Models/MovimientoInventario.php",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "ff88161013c2920ec2f395a4a1836091ae3f16b250fcb6b6a0958bb38324298e"
+    },
+    {
+      "path": "app/Models/Order.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "2dcb8733267de30816a48cb8aa09e9e5eea83fa28be0160c504e09ac8eb6695b"
+    },
+    {
+      "path": "app/Models/OrderItem.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "1784c61bcc7e7b6f419e53e9e01115a6eb344948f4075c115c70539540a121d3"
+    },
+    {
+      "path": "app/Models/Pedido.php",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "62462797ae9886b82818537a395503af762033e8791f729f85f539554240e89e"
+    },
+    {
+      "path": "app/Models/Product.php",
+      "action_original": "Crear",
+      "action_u2": "Reemplazar completo",
+      "u2": true,
+      "sha256": "64abd2c3514d5c1e82cfad50eef0d7df5552d1450739dde868f6f24fa6d073e9"
+    },
+    {
+      "path": "app/Models/Producto.php",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "c87e81e20f5433aaacf5ff7f4b4b873b86ec308f5d60fed2ea552ee44e6aea48"
+    },
+    {
+      "path": "app/Models/Proveedor.php",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "095354fff4d01672d88a3de1f6b1f523b3f66b3baf1241c18de2383a82d08ed4"
+    },
+    {
+      "path": "app/Models/Publication.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "bf6b4b0ea4e8068fe413a6e267f67788d98987e0947f31ed720f1b8972d924de"
+    },
+    {
+      "path": "app/Models/ScmSetting.php",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "5b626537138659644fd8069016d360aa09a25530543de07ec2d1655dc37dc0e3"
+    },
+    {
+      "path": "app/Models/User.php",
+      "action_original": "Reemplazar completo",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "07f3724feab74501d23322abc7b5d379d37333b9939f68e72cebc84ae4b6d6c2"
+    },
+    {
+      "path": "app/Services/CrmMetrics.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "f2795674e26269bf156784846594604e965726a469bb5b1b4ba6fc89670a349d"
+    },
+    {
+      "path": "app/Services/InventoryService.php",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "8cd931e9abd8347745b6f2b1fe39b0de026ce64c956aa900e2cdf2f13e17f0d8"
+    },
+    {
+      "path": "app/Services/ScmReports.php",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "6df579ef74dc7fe207895eaecb498e2263f5868667246abc1ba3c28a47ac6729"
+    },
+    {
+      "path": "bootstrap/app.php",
+      "action_original": "Reemplazar completo",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "2f52ec1644192bb4f72c4b1ee59048605e3af6c595278a3e89996b8a00a0e903"
+    },
+    {
+      "path": "database/migrations/2026_10_01_000001_create_crm_tables.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "77c000f34de582df11cdbcd6ce11a8e3020006a55eaa9fc6331b80545b3425aa"
+    },
+    {
+      "path": "database/migrations/2026_10_01_000002_create_store_tables.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "914ca1d5c586555c043abb08590f2e855d3c16d3f90c9a4cd227352f14f6a440"
+    },
+    {
+      "path": "database/migrations/2026_10_02_000001_create_scm_tables.php",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "f7e35b456d139a38458a338c46ce01db38b8a82cd32a8a0a8164393fd9184a64"
+    },
+    {
+      "path": "database/seeders/DatabaseSeeder.php",
+      "action_original": "Reemplazar completo",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "7e61c0154dbd210738621b780f430be71139b94089cc189684757ca2689b7da7"
+    },
+    {
+      "path": "database/seeders/products.json",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "991bd637fdb61173acbc8645827f57ec15bf97d82f932dd944dd6b18ce0fbeb5"
+    },
+    {
+      "path": "lang/es/validation.php",
+      "action_original": "Crear",
+      "action_u2": "Reemplazar completo",
+      "u2": true,
+      "sha256": "6af530d0f5e71528cfba36b754bdd6a3da0c61e2b1395538db5eb114199731fc"
+    },
+    {
+      "path": "package-lock.json",
+      "action_original": "Reemplazar completo",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "6a2242cc3d47b3a709f98f41f925f5e74ed20da633414c6b1029a927d55ed8cd"
+    },
+    {
+      "path": "package.json",
+      "action_original": "Reemplazar completo",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "a3aec803a2a673bce3c5489957d4446f9066d8e63e41dc7fe5b9d4435a65e615"
+    },
+    {
+      "path": "public/css/crm.css",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "0df167311008f5fb2cccdc0d59e1284aa5dc199f4a6c05c59447bb0ff6e02a1b"
+    },
+    {
+      "path": "public/css/scm.css",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "1748ecf61cfdf4fe8ec0f8560c4a55196ed3b96f9a48203c17ee238bb3726251"
+    },
+    {
+      "path": "public/js/crm.js",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "e95ad1024beddd0b414db834e9e62c177c373b6b47a3e78c57f871c78a770a51"
+    },
+    {
+      "path": "public/js/http.js",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "6c440225d49c74da02724a939823b49d886a9655407f71d45546f04819ca5ffd"
+    },
+    {
+      "path": "public/js/scm.js",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "405c5730ff025f5b97d471be921ed2fa233b46c82230b01098793081ac8acffd"
+    },
+    {
+      "path": "public/js/storefront.js",
+      "action_original": "Crear",
+      "action_u2": "Reemplazar completo",
+      "u2": true,
+      "sha256": "75f04ea4abf6c0498a990bbeed69af19406fba381ceb9517a6fa0e1a5d410577"
+    },
+    {
+      "path": "resources/js/app.js",
+      "action_original": "Reemplazar completo",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "51ecf4f36c1763d1b85852aa04f30afcffa5c9df50bdce99712d4af80909a72e"
+    },
+    {
+      "path": "resources/views/crm/index.blade.php",
+      "action_original": "Crear",
+      "action_u2": "Reemplazar completo",
+      "u2": true,
+      "sha256": "3b5afb1c0847646053cce71e86111c9dd513e6645ffca702a7b8735788932b2f"
+    },
+    {
+      "path": "resources/views/scm/index.blade.php",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "9a8711c773cd488b99ecaafcef52af4f0562362af36b5423a603e4ec5d06fbc0"
+    },
+    {
+      "path": "resources/views/welcome.blade.php",
+      "action_original": "Reemplazar completo",
+      "action_u2": "Reemplazar completo",
+      "u2": true,
+      "sha256": "d9e356352370199114f66f957ae84554d6e902a8381e30bf02213100fd78b613"
+    },
+    {
+      "path": "routes/web.php",
+      "action_original": "Reemplazar completo",
+      "action_u2": "Reemplazar completo",
+      "u2": true,
+      "sha256": "ff95d57c5593cef45a2686b8d5ef75752b5e7decc5b755a91c3d2a9fa805f3af"
+    },
+    {
+      "path": "tests/Feature/CrmTest.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "38d152fa01a1f8fde7884acf7042ac54925b8de436ea86b0b0b0333de6f09140"
+    },
+    {
+      "path": "tests/Feature/ScmTest.php",
+      "action_original": "Crear",
+      "action_u2": "Crear",
+      "u2": true,
+      "sha256": "c21465e2a143467e03f16d03407a9e9bd00615764b9b789e607ccb18c5f9e228"
+    },
+    {
+      "path": "tests/Feature/StoreTest.php",
+      "action_original": "Crear",
+      "action_u2": "Conservar anterior",
+      "u2": false,
+      "sha256": "f984c038e30aa132568678969915639e7114961657a8f669ebeae4c937dd1ebc"
+    }
+  ],
+  "tests": "30 passed, 232 assertions; SCM/CRM/store DOM; real HTTP session and CSRF; Vite build; visual Chrome not completed"
+}

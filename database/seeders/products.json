@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "name": "Hoodie Esencial",
+    "color": "Gris Carbón",
+    "originalPrice": 1890,
+    "price": 1512,
+    "image": "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?q=80&w=800&auto=format&fit=crop",
+    "badge": "PROMO -20%",
+    "category": "Hoodie",
+    "description": "Hoodie premium de alta calidad con ajuste relajado y diseño minimalista. Algodón de alto gramaje para durabilidad excepcional."
+  },
+  {
+    "id": 2,
+    "name": "Tee Oversized",
+    "color": "Blanco Hueso",
+    "originalPrice": 1190,
+    "price": 952,
+    "image": "https://images.unsplash.com/photo-1622445275576-721325763afe?q=80&w=800&auto=format&fit=crop",
+    "badge": "PROMO -20%",
+    "category": "T-Shirt",
+    "description": "Camiseta oversized de algodón 100% con corte holgado y cómodo. Cuello reforzado."
+  },
+  {
+    "id": 3,
+    "name": "Hoodie Gráfico",
+    "color": "Negro Lavado",
+    "originalPrice": 2090,
+    "price": 1672,
+    "image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=800&auto=format&fit=crop",
+    "badge": "PROMO -20%",
+    "category": "Hoodie",
+    "description": "Hoodie con gráficos exclusivos en serigrafía de alta densidad y acabado lavado para look desgastado."
+  },
+  {
+    "id": 4,
+    "name": "Tee Vintage",
+    "color": "Gris",
+    "originalPrice": 1390,
+    "price": 1112,
+    "image": "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=800&auto=format&fit=crop",
+    "badge": "PROMO -20%",
+    "category": "T-Shirt",
+    "description": "Camiseta con lavado vintage en ácido y gráfico retro craquelado intencionalmente."
+  },
+  {
+    "id": 5,
+    "name": "Cargo Pants",
+    "color": "Negro",
+    "originalPrice": 2490,
+    "price": 1992,
+    "image": "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?q=80&w=800&auto=format&fit=crop",
+    "badge": "PROMO -20%",
+    "category": "Pants",
+    "description": "Pantalones cargo utilitarios con múltiples bolsillos tridimensionales y tela resistente al desgarro."
+  },
+  {
+    "id": 6,
+    "name": "Beanie Premium",
+    "color": "Negro",
+    "originalPrice": 690,
+    "price": 552,
+    "image": "https://images.unsplash.com/photo-1576871337622-98d48d1cf531?q=80&w=800&auto=format&fit=crop",
+    "badge": "PROMO -20%",
+    "category": "Accessory",
+    "description": "Gorro de punto premium con logo frontal bordado en 3D. Mezcla de lana y acrílico para retención térmica."
+  }
+]
