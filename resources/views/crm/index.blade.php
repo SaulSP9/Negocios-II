@@ -4,10 +4,10 @@
     <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}"><title>HFSTUDIOS | CRM</title>
     <link rel="stylesheet" href="/css/crm.css">
-    <script src="/js/http.js" defer></script><script src="/js/crm.js" defer></script>
+    <script src="/js/http.js?v={{ filemtime(public_path('js/http.js')) }}" defer></script><script src="/js/crm.js?v={{ filemtime(public_path('js/crm.js')) }}" defer></script>
 </head>
 <body>
-<header><a href="/" class="brand">HFSTUDIOS <small>CRM</small></a><div><a href="/scm">Inventario SCM</a> · {{ auth()->user()->name }} · {{ auth()->user()->role }} <button id="logout">Cerrar sesión</button></div></header>
+<header><a href="/" class="brand">HFSTUDIOS <small>CRM</small></a><div>@include('partials.module-links') · {{ auth()->user()->name }} · {{ auth()->user()->role_label }} <button id="logout" type="button">Cerrar sesión</button></div></header>
 <div class="shell">
     <aside><p>RELACIONES CON CLIENTES</p><nav>
         <button data-tab="dashboard" class="selected">Dashboard</button><button data-tab="clients">Clientes</button>
@@ -34,7 +34,7 @@
         <section id="users" class="tab" hidden><div class="heading"><div><span class="eyebrow">ADMINISTRACIÓN</span><h1>Equipo y permisos</h1></div></div><div class="two-col"><article><h2>Crear cuenta del equipo</h2><form id="user-form">
             <label>Nombre<input name="name" required minlength="2" maxlength="120"></label><label>Correo<input name="email" type="email" required></label>
             <label>Contraseña<input name="password" type="password" required minlength="12" maxlength="128" autocomplete="new-password"></label>
-            <label>Rol<select name="role"><option value="usuario">Usuario: gestiona CRM</option><option value="admin">Admin: CRM, equipo y tienda</option></select></label><button class="primary">Crear usuario</button></form></article>
+            <label>Rol<select name="role"><option value="ventas">Ventas: CRM y órdenes ERP</option><option value="logistica">Logística: SCM y entregas</option><option value="usuario">Operador: CRM y operación</option><option value="admin">Administrador: todos los módulos</option></select></label><button type="submit" class="primary">Crear usuario</button></form><a href="/erp#users">Cambiar roles desde ERP</a></article>
             <article><h2>Cuentas registradas</h2><div id="user-list"></div></article></div></section>
         @endif
         <section id="detail" class="tab" hidden><button id="back-clients">← Volver a clientes</button><div class="heading"><div><span class="eyebrow">HISTORIAL CENTRALIZADO</span><h1 id="detail-title"></h1></div></div><article id="detail-info"></article>

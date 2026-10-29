@@ -1,10 +1,10 @@
 document.addEventListener('alpine:init', () => {
             Alpine.data('app', () => ({
-                currentRoute: 'inicio',
+                currentRoute: 'catalogo',
                 searchQuery: '',
                 toast: { show: false, message: '' },
                 mobileMenuOpen: false,
-                landingEmail: '', newsletterEmail: '',
+                newsletterEmail: '',
                 contactForm: { name: '', email: '', message: '' },
                 
                 get isAnyModalOpen() {
@@ -56,7 +56,8 @@ document.addEventListener('alpine:init', () => {
                 checkoutKey: '', isSaving: false, ready:false,
                 productEditorOpen:false, productEditingId:null,
                 productForm:{name:'',color:'',category:'Hoodie',price:'',originalPrice:'',stock:0,image:'',badge:'',description:'',active:true},
-                get isStaff() {return ['admin','usuario'].includes(this.user.role);},
+                get isStaff() {return ['admin','usuario','ventas','logistica'].includes(this.user.role);},
+                can(permission) {return (this.user.permissions || []).includes(permission);},
                 get formattedTimer() {
                     const h = Math.floor(this.auction.timerSeconds / 3600).toString().padStart(2, '0');
                     const m = Math.floor((this.auction.timerSeconds % 3600) / 60).toString().padStart(2, '0');
@@ -92,12 +93,11 @@ document.addEventListener('alpine:init', () => {
                 navigateTo(route) {
                     if(route==='admin'&&!this.isAdmin){this.showToast('Acceso solo para administradores.');return;}
                     if(['perfil','mis-publicaciones','publicar','subasta'].includes(route)&&!this.isLoggedIn){this.currentRoute='login';this.showToast('Inicia sesión para continuar.');return;}
-                    if(route==='crm'||route==='scm'){if(this.isStaff)location.href='/'+route;return;}
+                    if(['crm','scm','erp'].includes(route)){if(this.can({crm:'crm',scm:'scm.read',erp:'erp.read'}[route]))location.href='/'+route;return;}
                     this.currentRoute=route;window.scrollTo({top:0,behavior:'smooth'});
                 },
                 showToast(message) { this.toast.message = message; this.toast.show = true; setTimeout(() => { this.toast.show = false; }, 3500); },
                 async subscribeNewsletter(){try{await HF.request('/tienda/suscripciones','POST',{email:this.newsletterEmail});this.newsletterEmail='';this.showToast('Suscripción guardada.');}catch(e){this.showToast(e.message);}},
-                async handleLandingSubmit(){try{await HF.request('/tienda/suscripciones','POST',{email:this.landingEmail});this.showToast('Suscripción guardada.');this.landingEmail='';this.navigateTo('catalogo');}catch(e){this.showToast(e.message);}},
                 viewProductDetail(product) { this.selectedProduct = product; this.productDetailOpen = true; },
                 
                 addToCart(product) {
@@ -110,7 +110,7 @@ document.addEventListener('alpine:init', () => {
                 decreaseQty(index){if(this.cart[index].quantity>1)this.cart[index].quantity--;else this.removeFromCart(index);},
                 removeFromCart(index){this.cart.splice(index,1);},
                 applyDiscount(){if(this.discountCode.trim().toUpperCase()!=='HF10'){this.showToast('Código inválido.');return;}this.discountApplied=true;this.discountCode='';this.showToast('Descuento HF10 aplicado.');},
-                handleCheckout(){if(!this.isLoggedIn){this.cartOpen=false;this.navigateTo('login');this.showToast('Inicia sesión para registrar tu pedido.');return;}if(!this.cart.length)return;this.checkoutKey=crypto.randomUUID();this.cartOpen=false;this.checkoutOpen=true;this.checkoutStep=1;},
+                handleCheckout(){if(!this.isLoggedIn){this.cartOpen=false;this.navigateTo('login');this.showToast('Inicia sesión para registrar tu pedido.');return;}if(!this.cart.length)return;this.checkoutKey=HF.uuid();this.cartOpen=false;this.checkoutOpen=true;this.checkoutStep=1;},
                 async processFinalPayment(){
                     if(this.isCheckingOut)return;this.isCheckingOut=true;
                     try{
@@ -144,10 +144,10 @@ document.addEventListener('alpine:init', () => {
                 async saveEdit(){if(this.isSaving)return;this.isSaving=true;try{await HF.request('/tienda/publicaciones/'+this.editForm.id,'PUT',this.editForm);await this.refreshPrivate();this.editModalOpen=false;this.showToast('Publicación actualizada.');}catch(e){this.showToast(e.message);}finally{this.isSaving=false;}},
                 async handleLogin(){
                     if(this.isLoggingIn)return;this.isLoggingIn=true;
-                    try{const result=await HF.request('/login','POST',this.loginForm);this.setSession(result.user);this.loginForm={email:'',password:''};await this.refreshPublic();await this.refreshPrivate();this.showToast('Sesión iniciada.');if(this.isStaff)location.href='/crm';else this.navigateTo('perfil');}
+                    try{const result=await HF.request('/login','POST',this.loginForm);this.setSession(result.user);this.loginForm={email:'',password:''};await this.refreshPublic();await this.refreshPrivate();this.showToast('Sesión iniciada.');if(this.isStaff)location.href=this.user.home||'/erp';else this.navigateTo('perfil');}
                     catch(e){this.showToast(e.message);}finally{this.isLoggingIn=false;}
                 },
-                async handleLogout(){try{await HF.request('/logout','POST',{});this.setSession(null);this.userOrders=[];this.userProducts=[];this.adminOrdersList=[];this.adminInvoicesList=[];this.adminStats={sales:'$0',orders:0,users:0};this.navigateTo('inicio');await this.refreshPublic();this.showToast('Sesión finalizada.');}catch(e){this.showToast(e.message);}},
+                async handleLogout(){try{await HF.request('/logout','POST',{});this.setSession(null);this.userOrders=[];this.userProducts=[];this.adminOrdersList=[];this.adminInvoicesList=[];this.adminStats={sales:'$0',orders:0,users:0};this.navigateTo('catalogo');await this.refreshPublic();this.showToast('Sesión finalizada.');}catch(e){this.showToast(e.message);}},
                 async handleRegistro(){if(this.isSaving)return;this.isSaving=true;try{const result=await HF.request('/registro','POST',this.registroForm);this.setSession(result.user);this.registroForm={name:'',email:'',password:''};await this.refreshPrivate();this.navigateTo('perfil');this.showToast('Cuenta creada.');}catch(e){this.showToast(e.message);}finally{this.isSaving=false;}},
                 async handleContactSubmit(){try{await HF.request('/tienda/contacto','POST',this.contactForm);this.contactForm={name:'',email:'',message:''};this.showToast('Mensaje guardado para atención del equipo.');}catch(e){this.showToast(e.message);}},
                 async addComment(){try{this.comments=await HF.request('/tienda/comentarios','POST',{text:this.newComment});this.newComment='';this.showToast('Reseña guardada.');}catch(e){this.showToast(e.message);}},

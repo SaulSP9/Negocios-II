@@ -9,7 +9,7 @@ class ClienteRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return in_array($this->user()?->role, ['admin', 'usuario'], true);
+        return $this->user()?->hasPermission('crm') ?? false;
     }
 
     protected function prepareForValidation(): void

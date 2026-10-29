@@ -1,0 +1,37 @@
+PHPUnit 11.5.52 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.3.6
+Configuration: phpunit.xml
+
+..................................................                50 / 50 (100%)
+
+Time: 00:01.527, Memory: 52.50 MB
+
+OK (50 tests, 413 assertions)
+
+OK HTTP real: sesión, cookies, login /auth/login y protección CSRF 419
+OK ERP: cliente CRM, rechazo duplicado visible, selección, cantidades, quitar, atrás/siguiente, confirmar una vez, stock compartido, Push, detalle y botón de impresión
+OK ERP: guardar pendiente, procesar, completar, cancelar con devolución, búsqueda y limpiar filtros
+OK ERP: reportes y CSV persistentes, madurez con evidencia, recursos alta/edición, usuarios y cambio de rol
+OK CRM: alta, edición, historial, interacción, evaluación, etapa, Mi actividad, eliminación, contactos, equipo y actualizar
+OK SCM: proveedores alta/editar/duplicado/eliminar, productos alta/editar/archivar, Push/Pull, movimientos, búsqueda/pedido/surtir, madurez, actualizar y CSV
+OK Tienda: Alpine real, registro/login/logout, carrito y cantidades, cupón, checkout, persistencia, PDF real, publicaciones alta/editar/eliminar, reseñas, subasta, contacto y suscripción
+OK Rol ventas: menú dinámico y bloqueos reales del backend
+OK Rol logistica: menú dinámico y bloqueos reales del backend
+OK Sin excepciones de JavaScript no controladas en los recorridos
+{
+  "success": true,
+  "groups": 10,
+  "checks": [
+    "HTTP real: sesión, cookies, login /auth/login y protección CSRF 419",
+    "ERP: cliente CRM, rechazo duplicado visible, selección, cantidades, quitar, atrás/siguiente, confirmar una vez, stock compartido, Push, detalle y botón de impresión",
+    "ERP: guardar pendiente, procesar, completar, cancelar con devolución, búsqueda y limpiar filtros",
+    "ERP: reportes y CSV persistentes, madurez con evidencia, recursos alta/edición, usuarios y cambio de rol",
+    "CRM: alta, edición, historial, interacción, evaluación, etapa, Mi actividad, eliminación, contactos, equipo y actualizar",
+    "SCM: proveedores alta/editar/duplicado/eliminar, productos alta/editar/archivar, Push/Pull, movimientos, búsqueda/pedido/surtir, madurez, actualizar y CSV",
+    "Tienda: Alpine real, registro/login/logout, carrito y cantidades, cupón, checkout, persistencia, PDF real, publicaciones alta/editar/eliminar, reseñas, subasta, contacto y suscripción",
+    "Rol ventas: menú dinámico y bloqueos reales del backend",
+    "Rol logistica: menú dinámico y bloqueos reales del backend",
+    "Sin excepciones de JavaScript no controladas en los recorridos"
+  ]
+}

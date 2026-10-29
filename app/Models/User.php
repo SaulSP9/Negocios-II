@@ -12,6 +12,26 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    public function hasPermission(string $permission): bool
+    {
+        return in_array($permission, \App\Support\Permissions::forRole($this->role ?? 'cliente'), true);
+    }
+
+    public function getPermissionsAttribute(): array
+    {
+        return \App\Support\Permissions::forRole($this->role ?? 'cliente');
+    }
+
+    public function getRoleLabelAttribute(): string
+    {
+        return \App\Support\Permissions::label($this->role ?? 'cliente');
+    }
+
+    public function getHomeAttribute(): string
+    {
+        return $this->hasPermission('erp.read') ? '/erp' : '/?vista=perfil';
+    }
+
     /**
      * The attributes that are mass assignable.
      *

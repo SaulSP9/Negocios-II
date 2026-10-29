@@ -1,0 +1,357 @@
+{
+  "base_commit": "fb8d73ff0da41cd8e2ba0500f732381cc10485a1",
+  "documento": "Distribución por etapas_U3(1).pdf",
+  "rutas_codigo": [
+    "app/Console/Commands/CreateStaff.php",
+    "app/Console/Commands/DemoErp.php",
+    "app/Console/Commands/DiagnoseProject.php",
+    "app/Http/Controllers/AuthController.php",
+    "app/Http/Controllers/CrmController.php",
+    "app/Http/Controllers/ErpController.php",
+    "app/Http/Controllers/ScmController.php",
+    "app/Http/Controllers/UserRoleController.php",
+    "app/Http/Middleware/RequirePermission.php",
+    "app/Http/Requests/ClienteRequest.php",
+    "app/Http/Requests/InteraccionRequest.php",
+    "app/Http/Requests/OrdenRequest.php",
+    "app/Http/Requests/ScmProductRequest.php",
+    "app/Models/EstadoERP.php",
+    "app/Models/Orden.php",
+    "app/Models/OrdenHistorial.php",
+    "app/Models/OrdenProducto.php",
+    "app/Models/ProcesoInterno.php",
+    "app/Models/Recurso.php",
+    "app/Models/ReporteErp.php",
+    "app/Models/User.php",
+    "app/Services/ErpMetrics.php",
+    "app/Services/ErpOrders.php",
+    "app/Services/ScmReports.php",
+    "app/Support/Permissions.php",
+    "bootstrap/app.php",
+    "database/migrations/2026_10_29_000001_create_erp_tables.php",
+    "package-lock.json",
+    "package.json",
+    "public/css/erp.css",
+    "public/js/erp.js",
+    "public/js/http.js",
+    "public/js/scm.js",
+    "public/js/storefront.js",
+    "resources/views/crm/index.blade.php",
+    "resources/views/erp/index.blade.php",
+    "resources/views/partials/module-links.blade.php",
+    "resources/views/scm/index.blade.php",
+    "resources/views/welcome.blade.php",
+    "routes/web.php",
+    "tests/Feature/ErpTest.php",
+    "tests/ui/fixtures.php",
+    "tests/ui/run.cjs"
+  ],
+  "archivos": [
+    {
+      "ruta": "README.md",
+      "accion": "reemplazar",
+      "bytes": 2073,
+      "sha256": "43f593114f4435530f8e523bb48c769c1a3dfeb52a9d43f834f9fe3c9f30d185"
+    },
+    {
+      "ruta": "app/Console/Commands/CreateStaff.php",
+      "accion": "reemplazar",
+      "bytes": 1332,
+      "sha256": "863647bf7d4ba513621dc74034aedee7463f586996f59513a8e59f228f744809"
+    },
+    {
+      "ruta": "app/Console/Commands/DemoErp.php",
+      "accion": "crear",
+      "bytes": 4757,
+      "sha256": "0e62955ba99b10bdda2afdd75490c04ec92fb9432034521dd1fafed584d90821"
+    },
+    {
+      "ruta": "app/Console/Commands/DiagnoseProject.php",
+      "accion": "crear",
+      "bytes": 2638,
+      "sha256": "cfb9baee540c614db49b2ab956246288f2a073a0126554b91abd599ee4b02260"
+    },
+    {
+      "ruta": "app/Http/Controllers/AuthController.php",
+      "accion": "reemplazar",
+      "bytes": 1858,
+      "sha256": "6d657fedff024aba6531272bd640a8ad6c3bc48108a7f5db1f51df237129e753"
+    },
+    {
+      "ruta": "app/Http/Controllers/CrmController.php",
+      "accion": "reemplazar",
+      "bytes": 4759,
+      "sha256": "cbbb5533729d0c7239bc7a09e9514cac0922bd3bf771986446ead1a48213762b"
+    },
+    {
+      "ruta": "app/Http/Controllers/ErpController.php",
+      "accion": "crear",
+      "bytes": 6885,
+      "sha256": "0bab2af360c398fe601cb99ce7bbbca6287cd938995b14ad42ec9cfb300e9115"
+    },
+    {
+      "ruta": "app/Http/Controllers/ScmController.php",
+      "accion": "reemplazar",
+      "bytes": 10587,
+      "sha256": "a109555dfb2479aa82f37a1560213228a065b42bafaae7dcee77f9f6a5100d0b"
+    },
+    {
+      "ruta": "app/Http/Controllers/UserRoleController.php",
+      "accion": "crear",
+      "bytes": 1118,
+      "sha256": "9a9b5258da86642981f89a3527dd362f82c829de3de15e03e849378fc7804004"
+    },
+    {
+      "ruta": "app/Http/Middleware/RequirePermission.php",
+      "accion": "crear",
+      "bytes": 358,
+      "sha256": "8e9cd11c938d260cc0d10675129c4a8987f28656ca9323fc08611a1bcceb374f"
+    },
+    {
+      "ruta": "app/Http/Requests/ClienteRequest.php",
+      "accion": "reemplazar",
+      "bytes": 957,
+      "sha256": "49bb589d2dd2428bd70eca4d74790d1e40c388b808392755399f58e5ee04e03d"
+    },
+    {
+      "ruta": "app/Http/Requests/InteraccionRequest.php",
+      "accion": "reemplazar",
+      "bytes": 523,
+      "sha256": "228fd842f3fe3bc33cd8b1a1082faeb319299e2b54b7c93da800d3b7208f28c0"
+    },
+    {
+      "ruta": "app/Http/Requests/OrdenRequest.php",
+      "accion": "crear",
+      "bytes": 1293,
+      "sha256": "6dfa71c111669715745a84aeec363db6068788f233dd73ff989cbf5c1e5399e1"
+    },
+    {
+      "ruta": "app/Http/Requests/ScmProductRequest.php",
+      "accion": "reemplazar",
+      "bytes": 1273,
+      "sha256": "e68f92041f9306a7db88f0080f2a1490eafc80af072497b8e50a3cfdc23ea46a"
+    },
+    {
+      "ruta": "app/Models/EstadoERP.php",
+      "accion": "crear",
+      "bytes": 303,
+      "sha256": "ced5bb527cda9651883444cc3eef8c8e6e3e9ae1baea9954b1f038db5c89ee72"
+    },
+    {
+      "ruta": "app/Models/Orden.php",
+      "accion": "crear",
+      "bytes": 1195,
+      "sha256": "dda310ee98c6660ad9d6145805a1fe9aa9e28adcc73d582fa139fa9357f957b7"
+    },
+    {
+      "ruta": "app/Models/OrdenHistorial.php",
+      "accion": "crear",
+      "bytes": 366,
+      "sha256": "65aac359cee6a3656f363e2506a86e6f58fdcd9751e451bfef766084bc3dd7b2"
+    },
+    {
+      "ruta": "app/Models/OrdenProducto.php",
+      "accion": "crear",
+      "bytes": 741,
+      "sha256": "d1b627a81109450226ec9da946d440a45e1c5c52982402489de02bb6848c35fa"
+    },
+    {
+      "ruta": "app/Models/ProcesoInterno.php",
+      "accion": "crear",
+      "bytes": 307,
+      "sha256": "d8fdfc7d8a354146b2bd66ca4c6f6399f499d87de9e321f5a3036b3b7a0a0c0d"
+    },
+    {
+      "ruta": "app/Models/Recurso.php",
+      "accion": "crear",
+      "bytes": 382,
+      "sha256": "e332aed7f43d8964c79417f287e93952fbc38d4d451736f69361ce8660c8874b"
+    },
+    {
+      "ruta": "app/Models/ReporteErp.php",
+      "accion": "crear",
+      "bytes": 358,
+      "sha256": "f50d461ad062c6ad6994968241e900e15f6be6c548d1da4a5e2cdb8865cfddbc"
+    },
+    {
+      "ruta": "app/Models/User.php",
+      "accion": "reemplazar",
+      "bytes": 1657,
+      "sha256": "7e23b9579f7c23284b9586b249f7c186f42968f801bdaec0a12dcdd03036bc48"
+    },
+    {
+      "ruta": "app/Services/ErpMetrics.php",
+      "accion": "crear",
+      "bytes": 3952,
+      "sha256": "7023ecfdb86f4f2e800e7882aeafacb3f8c478a7e6eed2be3238125e44734127"
+    },
+    {
+      "ruta": "app/Services/ErpOrders.php",
+      "accion": "crear",
+      "bytes": 8539,
+      "sha256": "1debefd0d9d09414a70bdfbb979c487ae9da53a8b5831209c77f167801c4ac34"
+    },
+    {
+      "ruta": "app/Services/ScmReports.php",
+      "accion": "reemplazar",
+      "bytes": 2538,
+      "sha256": "53826eb497ed98714060f185db25bc07ea23f18f2ac0453b41ce64b751ead817"
+    },
+    {
+      "ruta": "app/Support/Permissions.php",
+      "accion": "crear",
+      "bytes": 1067,
+      "sha256": "39717123e3d97da550aef9eee649ee8476ab13efd24459181b15342b06e9bc16"
+    },
+    {
+      "ruta": "bootstrap/app.php",
+      "accion": "reemplazar",
+      "bytes": 658,
+      "sha256": "f095291507799cc6c759631a7127ed0601f21dfa7f72023687ac5c678a81b428"
+    },
+    {
+      "ruta": "database/migrations/2026_10_29_000001_create_erp_tables.php",
+      "accion": "crear",
+      "bytes": 4262,
+      "sha256": "fa5a8c32ecf41a2da9c95a5b560e04f25e12abaebe1f25cf0e115a45a9287cd4"
+    },
+    {
+      "ruta": "docs/CODIGO_POR_RUTA_U3.md",
+      "accion": "crear",
+      "bytes": 460171,
+      "sha256": "e0b8ebe23c5ce81321f3d0760b9fd1784f4eca004c08b287ad80b22c5537e2b2"
+    },
+    {
+      "ruta": "docs/ERP_U3.md",
+      "accion": "crear",
+      "bytes": 6844,
+      "sha256": "e93a4b3ec808f8108432031ec3adbe883e4bb57d0e6b858548dcf2cd94fa4674"
+    },
+    {
+      "ruta": "docs/GUIA_COPIAR_PEGAR_U3.html",
+      "accion": "crear",
+      "bytes": 611592,
+      "sha256": "3c208e69cc3313e9adadf4a9ff08e72d2969be180a83e321ccea0473571f7b75"
+    },
+    {
+      "ruta": "docs/MATRIZ_U3.md",
+      "accion": "crear",
+      "bytes": 3981,
+      "sha256": "4642b8445a26cd04865fad5e2eeb3f3aed0d1a39f1ae88d82d5d91bb22b70543"
+    },
+    {
+      "ruta": "docs/PRESENTACION_U3.md",
+      "accion": "crear",
+      "bytes": 2982,
+      "sha256": "298d0c188fd1c7cc5cc139cdafa6da6c5425948fa205934ac712b6f095309619"
+    },
+    {
+      "ruta": "docs/RESULTADOS_PRUEBAS_U3.txt",
+      "accion": "crear",
+      "bytes": 2602,
+      "sha256": "14187ccff67a5620782fd7b84eb1bd8176f5b3a61389269fb446047581ed1856"
+    },
+    {
+      "ruta": "docs/VALIDACION_U3.md",
+      "accion": "crear",
+      "bytes": 3593,
+      "sha256": "4c27023c2e9946020d0812144184a96e806812dabbe9db6ff96677283b014d1e"
+    },
+    {
+      "ruta": "package-lock.json",
+      "accion": "reemplazar",
+      "bytes": 136925,
+      "sha256": "0ca8ebdbc3cb5bf292409ccccfe289352b243ac587f9657f9deadc6bc515c091"
+    },
+    {
+      "ruta": "package.json",
+      "accion": "reemplazar",
+      "bytes": 672,
+      "sha256": "c4af68211563c120338a63fbd5bfed38b827624ca8711be2e8700fc4c3db718c"
+    },
+    {
+      "ruta": "public/css/erp.css",
+      "accion": "crear",
+      "bytes": 11515,
+      "sha256": "19c854dace10f97adfbcb8a4ae4f02631979e5983b902328f15563dcda0f7c7e"
+    },
+    {
+      "ruta": "public/js/erp.js",
+      "accion": "crear",
+      "bytes": 25543,
+      "sha256": "fbaf5ed68dcc4f497f40eea8944aaf071ad2c1656dbe9dccecb18e83ec340e5b"
+    },
+    {
+      "ruta": "public/js/http.js",
+      "accion": "reemplazar",
+      "bytes": 1805,
+      "sha256": "5906b819e6e8286e63abd45137eb4bcc81e33d93b70068492c377293ce16de9f"
+    },
+    {
+      "ruta": "public/js/scm.js",
+      "accion": "reemplazar",
+      "bytes": 17867,
+      "sha256": "91654b618fac7ac7d566ba9744d7e4dfa8703df60352f6ab99784b4ef56a0cf7"
+    },
+    {
+      "ruta": "public/js/storefront.js",
+      "accion": "reemplazar",
+      "bytes": 16469,
+      "sha256": "11af388b4d815b52a94aa1dbb66851521e08eb3bb36881cf070ac7c75fc035e5"
+    },
+    {
+      "ruta": "resources/views/crm/index.blade.php",
+      "accion": "reemplazar",
+      "bytes": 7273,
+      "sha256": "31c0fae0f300c09238232d427be37278cf4e2ccf5314df0a4737e519d9b7732f"
+    },
+    {
+      "ruta": "resources/views/erp/index.blade.php",
+      "accion": "crear",
+      "bytes": 15663,
+      "sha256": "e366509d8c6f6cc9da3a70d72e427884afee59e3e7b782bb2b7ba11b687a5b16"
+    },
+    {
+      "ruta": "resources/views/partials/module-links.blade.php",
+      "accion": "crear",
+      "bytes": 220,
+      "sha256": "4a83c348e824475a7edda5bc350c0a5cfb03912ff2a81d2c4e1e96b39181df85"
+    },
+    {
+      "ruta": "resources/views/scm/index.blade.php",
+      "accion": "reemplazar",
+      "bytes": 12247,
+      "sha256": "a8b87da676d73d7f087ddc062df2299da3ee2ef171fea67d1e3ef9f676f3095f"
+    },
+    {
+      "ruta": "resources/views/welcome.blade.php",
+      "accion": "reemplazar",
+      "bytes": 89617,
+      "sha256": "d0e24d8a3613ca9342aee3e6e9b8b343740810a560f53b8591e775dabdce5316"
+    },
+    {
+      "ruta": "routes/web.php",
+      "accion": "reemplazar",
+      "bytes": 7278,
+      "sha256": "112d8c29dbf54f682f39c5ebac1628c66b8c29427e9aa900a6e79b37ae312902"
+    },
+    {
+      "ruta": "tests/Feature/ErpTest.php",
+      "accion": "crear",
+      "bytes": 18622,
+      "sha256": "216a262f8dc00d2b302e895ec09613fd960378c7bb2d137c3ccc7bc7edce1226"
+    },
+    {
+      "ruta": "tests/ui/fixtures.php",
+      "accion": "crear",
+      "bytes": 1584,
+      "sha256": "9d267bdfbcd1a77463fad8d95ed068a8e2a5db1ec7dba63c008e931ada4e53fe"
+    },
+    {
+      "ruta": "tests/ui/run.cjs",
+      "accion": "crear",
+      "bytes": 29907,
+      "sha256": "0ab0fdbc186c74782e5e75ca6b29301cef6f419b8cd8a44bd0e04e48a798a991"
+    }
+  ]
+}

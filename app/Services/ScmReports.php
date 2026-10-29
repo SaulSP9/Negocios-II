@@ -14,7 +14,8 @@ class ScmReports
         $products = Product::with(['proveedor', 'inventario'])->orderBy('id')->get();
         $cutoff = now()->subDays(30);
         $sales = MovimientoInventario::query()->where('tipo', 'salida')->where('motivo', 'venta')
-            ->where(fn ($q) => $q->whereNull('order_id')->orWhereIn('order_id', DB::table('orders')->select('id')->whereIn('status', ['Enviado', 'Entregado'])));
+            ->where(fn ($q) => $q->whereNull('order_id')->orWhereIn('order_id', DB::table('orders')->select('id')->whereIn('status', ['Enviado', 'Entregado'])))
+            ->where(fn ($q) => $q->whereNull('orden_empresarial_id')->orWhereIn('orden_empresarial_id', DB::table('ordenes_empresariales')->select('id')->whereIn('estado', ['procesada', 'completada'])));
         $allSales = (clone $sales)->selectRaw('producto_id, SUM(cantidad) as total')->groupBy('producto_id')->pluck('total', 'producto_id');
         $recent = (clone $sales)->where('fecha', '>=', $cutoff)->selectRaw('producto_id, SUM(cantidad) as total')->groupBy('producto_id')->pluck('total', 'producto_id');
         $top = $products->map(fn ($p) => ['id' => $p->id, 'nombre' => $p->name, 'unidades' => (int) ($allSales[$p->id] ?? 0)])->filter(fn ($p) => $p['unidades'] > 0)->sortByDesc('unidades')->take(10)->values();

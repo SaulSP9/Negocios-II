@@ -43,6 +43,7 @@ class CrmController extends Controller
 
     public function destroy(Cliente $cliente)
     {
+        abort_if(\App\Models\Orden::where('cliente_id', $cliente->id)->exists(), 409, 'El cliente tiene órdenes ERP. Cámbialo a inactivo para conservar su historial.');
         $cliente->delete();
 
         return response()->noContent();
@@ -89,7 +90,8 @@ class CrmController extends Controller
 
     public function createUser(Request $request)
     {
-        $data = $request->validate(['name' => 'required|string|min:2|max:120', 'email' => 'required|email|max:255|unique:users,email', 'password' => 'required|string|min:12|max:128', 'role' => 'required|in:admin,usuario']);
+        $request->merge(['email' => strtolower(trim((string) $request->email))]);
+        $data = $request->validate(['name' => 'required|string|min:2|max:120', 'email' => 'required|email|max:255|unique:users,email', 'password' => 'required|string|min:12|max:128', 'role' => 'required|in:admin,usuario,ventas,logistica']);
         $user = new User($data);
         $user->role = $data['role'];
         $user->save();

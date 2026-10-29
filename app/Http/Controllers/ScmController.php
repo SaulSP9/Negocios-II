@@ -66,6 +66,7 @@ class ScmController extends Controller
     {
         return DB::transaction(function () use ($producto) {
             $product = Product::lockForUpdate()->findOrFail($producto->id);
+            abort_if(\App\Models\Orden::where('estado', 'pendiente')->whereHas('productos', fn ($q) => $q->where('producto_id', $product->id))->exists(), 409, 'El producto está en una orden ERP pendiente. Procésala o cancélala antes de archivar.');
             abort_if($product->stock > 0, 409, 'Agota o ajusta el stock antes de archivar.');
             abort_if(Pedido::where('producto_id', $product->id)->where('estado', 'pendiente')->exists(), 409, 'El producto tiene pedidos SCM pendientes.');
             abort_if(DB::table('order_items')->join('orders', 'orders.id', '=', 'order_items.order_id')->where('product_id', $product->id)->whereIn('status', ['Pendiente', 'Enviado'])->exists(), 409, 'El producto tiene pedidos de tienda abiertos.');
@@ -73,6 +74,13 @@ class ScmController extends Controller
 
             return response()->noContent();
         }, 3);
+    }
+
+    public function restoreProduct(Producto $producto)
+    {
+        $producto->restore();
+
+        return $producto->fresh()->scmPresentation();
     }
 
     public function suppliers()

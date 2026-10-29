@@ -1,14 +1,19 @@
-# HFSTUDIOS
+# HFSTUDIOS · CRM + SCM + ERP
 
-Tienda Laravel 12 con CRM y SCM: clientes, seguimiento, etapas, evaluaciones, métricas, roles y Mi actividad. Catálogo y acciones de tienda conectados a base de datos.
+Laravel 12 / PHP 8.2+. Tienda, CRM, SCM y ERP con clientes y catálogo compartidos.
 
-Para el PDF U2 consulta [docs/SCM_U2.md](docs/SCM_U2.md): proveedores, inventario, pedidos, Push/Pull, madurez y reportes.
+- [Instalación y actualización en Laragon](docs/ERP_U3.md).
+- [Matriz del PDF y evidencias](docs/MATRIZ_U3.md).
+- [Recorrido de presentación](docs/PRESENTACION_U3.md).
+- [Validación y alcance de las pruebas](docs/VALIDACION_U3.md).
+- [Código completo por ruta](docs/CODIGO_POR_RUTA_U3.md).
+- [Guía con botones para copiar](docs/GUIA_COPIAR_PEGAR_U3.html).
 
-Consulta [docs/INSTALACION.md](docs/INSTALACION.md) para requisitos, instalación completa, configuración, permisos, rutas, matriz del PDF, pruebas y recorrido de aceptación.
+## Instalación nueva
 
-Inicio rápido para una copia nueva:
+Con PHP 8.2+ y Node compatible con Vite 7 (20.19+ o 22.12+):
 
-```sh
+```bat
 composer install
 npm ci
 php -r "file_exists('.env') || copy('.env.example', '.env');"
@@ -17,10 +22,38 @@ php -r "file_exists('database/database.sqlite') || touch('database/database.sqli
 php artisan migrate --seed
 npm run build
 php artisan hf:crear-usuario --role=admin
-php artisan test
+php artisan hf:diagnostico
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-El administrador se crea de forma interactiva, sin contraseña distribuida. El registro público crea clientes de tienda. El checkout registra pedidos pendientes de pago; no incluye cobros bancarios ni facturas fiscales. Los mensajes y suscripciones se guardan; no se envían emails.
+Abre `http://127.0.0.1:8000/?vista=login`. La cuenta usa la contraseña que escribas. El equipo entra a `/erp`; el registro público crea clientes de tienda.
 
-Se implementan los requisitos técnicos explícitos de Etapas 1 (CRM) y 2 (SCM) de Distribución por etapas_U2.pdf. Las Etapas 3–5 no detallan entregables. Abre `/scm` con una cuenta admin o usuario del equipo.
+## Actualizar una instalación existente
+
+Copia los archivos de actualización sobre la carpeta que contiene `artisan`, conserva `.env` y los registros de tu instalación, y ejecuta:
+
+```bat
+composer install
+npm ci
+php artisan config:clear
+php artisan migrate
+php artisan optimize:clear
+npm run build
+php artisan hf:diagnostico
+```
+
+Después recarga con Ctrl+F5.
+
+## Demostración y pruebas
+
+```bat
+php artisan hf:demo-u3
+php artisan test
+npm run test:ui
+```
+
+El comando demo solicita una contraseña y agrega cuentas de administrador, ventas y logística, clientes, proveedor, productos Push/Pull, recurso, orden procesada y corte empresarial. Una segunda ejecución conserva el escenario.
+
+Las pruebas de interfaz usan eventos DOM/Alpine y HTTP real contra Laravel en SQLite temporal. Consulta el informe para los resultados y sus límites.
+
+La tienda registra pedidos y comprobantes internos. Cobros bancarios, facturas fiscales y envío de correos requieren servicios externos.

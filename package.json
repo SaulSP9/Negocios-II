@@ -4,13 +4,15 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "test:ui": "node tests/ui/run.cjs"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
         "autoprefixer": "^10.4.24",
         "axios": "^1.11.0",
         "concurrently": "^9.0.1",
+        "jsdom": "^26.1.0",
         "laravel-vite-plugin": "^2.0.0",
         "postcss": "^8.5.6",
         "tailwindcss": "^4.1.18",

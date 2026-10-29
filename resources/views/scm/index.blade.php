@@ -4,10 +4,10 @@
     <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}"><title>HFSTUDIOS | SCM</title>
     <link rel="stylesheet" href="/css/scm.css">
-    <script src="/js/http.js" defer></script><script src="/js/scm.js" defer></script>
+    <script src="/js/http.js?v={{ filemtime(public_path('js/http.js')) }}" defer></script><script src="/js/scm.js?v={{ filemtime(public_path('js/scm.js')) }}" defer></script>
 </head>
 <body data-role="{{ auth()->user()->role }}">
-<header><a class="brand" href="/">HFSTUDIOS <small>SCM</small></a><div><a href="/crm">CRM</a><span>{{ auth()->user()->name }} · {{ auth()->user()->role }}</span><button id="logout" type="button">Salir</button></div></header>
+<header><a class="brand" href="/">HFSTUDIOS <small>SCM</small></a><div>@include('partials.module-links')<span>{{ auth()->user()->name }} · {{ auth()->user()->role_label }}</span><button id="logout" type="button">Salir</button></div></header>
 <nav aria-label="Módulos SCM"><button data-tab="dashboard" aria-current="page" type="button">Resumen</button><button data-tab="catalog" type="button">Catálogo e inventario</button><button data-tab="suppliers" type="button">Proveedores</button><button data-tab="orders" type="button">Pedidos SCM</button><button data-tab="maturity" type="button">Madurez</button></nav>
 <main>
     <div class="page-title"><div><p class="eyebrow">ETAPA 2 · CADENA DE SUMINISTRO</p><h1>Inventario con trazabilidad.</h1><p>Consulta existencias, recibe pedidos y compara las estrategias Push y Pull.</p></div><button id="refresh" type="button">Actualizar datos</button></div>
@@ -19,16 +19,16 @@
         <div class="two-col"><article><h3>Inventario crítico</h3><p>Stock disponible menor o igual al mínimo configurado.</p><div id="critical"></div></article><article><h3>Rotación lenta</h3><p>Productos con stock y 0–2 unidades vendidas en los últimos 30 días.</p><div id="slow"></div></article></div>
     </section>
     <section id="catalog" class="panel" hidden>
-        <div class="section-heading"><h2>Catálogo e inventario</h2>@if(auth()->user()->role === 'admin')<button id="new-product" class="primary" type="button">+ Producto</button>@endif</div>
+        <div class="section-heading"><h2>Catálogo e inventario</h2>@if(auth()->user()->hasPermission('scm.manage'))<button id="new-product" class="primary" type="button">+ Producto</button>@endif</div>
         <form id="product-filter" class="filters"><label>Buscar<input name="q" maxlength="120" placeholder="Nombre o descripción"></label><label>Estrategia<select name="estrategia"><option value="">Todas</option><option>PUSH</option><option>PULL</option></select></label><label>Estado<select name="critico"><option value="">Todos</option><option value="1">Stock crítico</option></select></label><label>Archivo<select name="archivados"><option value="0">Vigentes</option><option value="1">Archivados</option></select></label><button type="submit">Aplicar filtros</button></form>
         <div class="table-wrap"><table><thead><tr><th>Producto / proveedor</th><th>Existencias</th><th>Mínimo / objetivo</th><th>Costo / precio</th><th>Estrategia</th><th>Acciones</th></tr></thead><tbody id="product-rows"></tbody></table></div><div id="product-pages" class="pagination"></div>
     </section>
     <section id="suppliers" class="panel" hidden>
-        <div class="section-heading"><h2>Proveedores</h2>@if(auth()->user()->role === 'admin')<button id="new-supplier" class="primary" type="button">+ Proveedor</button>@endif</div>
+        <div class="section-heading"><h2>Proveedores</h2>@if(auth()->user()->hasPermission('scm.manage'))<button id="new-supplier" class="primary" type="button">+ Proveedor</button>@endif</div>
         <div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Contacto</th><th>Correo</th><th>Teléfono</th><th>Acciones</th></tr></thead><tbody id="supplier-rows"></tbody></table></div>
     </section>
     <section id="orders" class="panel" hidden>
-        <div class="section-heading"><h2>Pedidos SCM</h2><button id="new-order" class="primary" type="button">Generar pedido</button></div>
+        <div class="section-heading"><h2>Pedidos SCM</h2>@if(auth()->user()->hasPermission('scm.operate'))<button id="new-order" class="primary" type="button">Generar pedido</button>@endif</div>
         <p>Los pedidos SCM son de un producto. Los pedidos del carrito se gestionan en el panel de la tienda. Surtir una reposición agrega stock; surtir una venta lo descuenta.</p>
         <form id="order-filter" class="filters"><label>Estado<select name="estado"><option value="">Todos</option><option value="pendiente">Pendiente</option><option value="surtido">Surtido</option></select></label><label>Tipo<select name="tipo"><option value="">Todos</option><option value="reposicion">Reposición</option><option value="venta">Venta</option></select></label><button type="submit">Aplicar filtros</button></form>
         <div class="table-wrap"><table><thead><tr><th>Pedido / producto</th><th>Cantidad</th><th>Tipo / origen</th><th>Estado</th><th>Registro / recepción</th><th>Acciones</th></tr></thead><tbody id="order-rows"></tbody></table></div><div id="order-pages" class="pagination"></div>
@@ -42,7 +42,7 @@
         </form></div><div><h3>Cómo funciona cada estrategia</h3><p><strong>Push:</strong> cuando stock ≤ mínimo, genera una reposición hasta el objetivo, descontando cantidades ya pedidas. La recepción física se confirma en Pedidos SCM.</p><p><strong>Pull:</strong> no genera reposiciones por el mínimo. El equipo solicita un pedido manual cuando existe demanda.</p><p>Los pedidos pendientes se conservan cuando cambia la estrategia. El sistema no envía solicitudes a proveedores externos.</p></div></div></article>
     </section>
 </main>
-@if(auth()->user()->role === 'admin')
+@if(auth()->user()->hasPermission('scm.manage'))
 <dialog id="product-dialog">
     <div class="dialog-heading">
         <h2 id="product-title">Producto</h2>

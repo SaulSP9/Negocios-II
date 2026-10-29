@@ -18,13 +18,13 @@ class CreateStaff extends Command
         $name = $this->option('name') ?: $this->ask('Nombre');
         $email = strtolower(trim($this->option('email') ?: $this->ask('Correo')));
         $password = $this->secret('Contraseña (mínimo 12 caracteres)');
-        $validator = Validator::make(compact('role', 'name', 'email', 'password'), ['role' => 'required|in:admin,usuario', 'name' => 'required|string|min:2|max:120', 'email' => 'required|email|max:255|unique:users,email', 'password' => 'required|string|min:12|max:128']);
+        $validator = Validator::make(compact('role', 'name', 'email', 'password'), ['role' => 'required|in:admin,usuario,ventas,logistica', 'name' => 'required|string|min:2|max:120', 'email' => 'required|email|max:255|unique:users,email', 'password' => 'required|string|min:12|max:128']);
         if ($validator->fails()) {
             foreach ($validator->errors()->all() as $error) {
                 $this->error($error);
             }
 
-return self::FAILURE;
+            return self::FAILURE;
         }
         $user = new User(compact('name', 'email', 'password'));
         $user->role = $role;

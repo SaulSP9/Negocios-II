@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HFSTUDIOS - Acceso Exclusivo</title>
+    <title>HFSTUDIOS - Tienda</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -153,7 +153,7 @@
         </div>
     </div>
 
-    <div x-show="currentRoute !== 'inicio' && currentRoute !== 'admin'" class="bg-[#F0EBE0] overflow-hidden relative h-6">
+    <div x-show="currentRoute !== 'admin'" class="bg-[#F0EBE0] overflow-hidden relative h-6">
         <div class="flex whitespace-nowrap marquee-content">
             <span class="inline-block text-[10px] font-bold uppercase tracking-[0.2em] py-1.5 px-8">VENTA SS26: 20% DE DESCUENTO EN TODA LA TIENDA | © HF STUDIOS, 2026</span>
             <span class="inline-block text-[10px] font-bold uppercase tracking-[0.2em] py-1.5 px-8">VENTA SS26: 20% DE DESCUENTO EN TODA LA TIENDA | © HF STUDIOS, 2026</span>
@@ -161,7 +161,7 @@
         </div>
     </div>
 
-    <nav x-show="currentRoute !== 'inicio' && currentRoute !== 'admin'" class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+    <nav x-show="currentRoute !== 'admin'" class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div class="max-w-screen-2xl mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
 
@@ -188,8 +188,9 @@
                         </div>
                     </template>
 
-                    <button x-show="isLoggedIn && isStaff" @click="navigateTo('crm')" class="text-xs font-bold">CRM</button>
-                    <a x-show="isLoggedIn && isStaff" href="/scm" class="font-bold">SCM</a>
+                    <button x-show="isLoggedIn && can('crm')" @click="navigateTo('crm')" class="text-xs font-bold">CRM</button>
+                    <a x-show="isLoggedIn && can('scm.read')" href="/scm" class="font-bold">SCM</a>
+                    <a x-show="isLoggedIn && can('erp.read')" href="/erp" class="font-bold">ERP</a>
                     <button x-show="isLoggedIn && isAdmin" @click="navigateTo('admin')" class="text-xs font-bold uppercase tracking-wider hover:opacity-60 transition bg-black text-white px-2 py-1">Admin</button>
 
                     <button @click="cartOpen = true" class="text-xs font-bold uppercase tracking-wider hover:opacity-60 transition relative">
@@ -221,8 +222,9 @@
                 </div>
             </template>
 
-            <button x-show="isLoggedIn && isStaff" @click="navigateTo('crm')" class="text-xl font-bold">CRM</button>
-                    <a x-show="isLoggedIn && isStaff" href="/scm" class="font-bold">SCM</a>
+            <button x-show="isLoggedIn && can('crm')" @click="navigateTo('crm')" class="text-xl font-bold">CRM</button>
+                    <a x-show="isLoggedIn && can('scm.read')" href="/scm" class="font-bold">SCM</a>
+                    <a x-show="isLoggedIn && can('erp.read')" href="/erp" class="font-bold">ERP</a>
             <button x-show="isLoggedIn && isAdmin" @click="navigateTo('admin'); mobileMenuOpen = false" class="text-2xl font-bold uppercase tracking-wider border-t border-gray-800 pt-6">Admin Panel</button>
             <button @click="cartOpen = true; mobileMenuOpen = false" class="text-2xl font-bold uppercase tracking-wider border-t border-gray-800 pt-6">Carrito (<span x-text="cartTotalItems"></span>)</button>
         </div>
@@ -379,29 +381,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div x-show="currentRoute === 'inicio'" x-cloak>
-        <section class="relative h-screen overflow-hidden">
-            <div class="absolute inset-0">
-                <img src="https://images.unsplash.com/photo-1550639525-c97d455acf70?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80"></div>
-            </div>
-            <div class="relative z-10 flex items-center justify-between px-6 md:px-12 py-6">
-                <h1 class="text-2xl md:text-3xl font-black tracking-tighter text-white">HFSTUDIOS</h1>
-                <button @click="navigateTo('login')" class="bg-white hover:bg-gray-200 text-black px-6 py-2 text-sm font-bold uppercase tracking-wider transition">Iniciar sesión</button>
-            </div>
-            <div class="relative z-10 flex flex-col items-center justify-center h-full px-6 pb-32">
-                <div class="max-w-3xl text-center">
-                    <h2 class="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight text-white mb-6 leading-tight">ACCESO EXCLUSIVO<br>AL DROP SS26.</h2>
-                    <p class="text-lg md:text-xl text-gray-300 mb-12 font-medium">Todo el catálogo con 20% de descuento por tiempo limitado.</p>
-                    <form @submit.prevent="handleLandingSubmit()" class="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
-                        <input type="email" required x-model="landingEmail" placeholder="Tu Email" class="flex-1 px-6 py-4 text-lg bg-white/90 border-2 border-white/20 focus:border-white focus:outline-none text-black">
-                        <button type="submit" class="bg-black hover:bg-gray-800 text-white border-2 border-white px-8 py-4 text-lg font-black uppercase tracking-widest transition whitespace-nowrap">Entrar a la tienda <i class="fas fa-chevron-right ml-2"></i></button>
-                    </form>
-                </div>
-            </div>
-        </section>
     </div>
 
     <div x-show="currentRoute === 'promociones-front'" x-cloak>
@@ -975,7 +954,7 @@
         </section>
     </div>
 
-    <footer x-show="currentRoute !== 'inicio' && currentRoute !== 'admin'" class="bg-black text-white py-16 mt-auto">
+    <footer x-show="currentRoute !== 'admin'" class="bg-black text-white py-16 mt-auto">
         <div class="max-w-screen-2xl mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                 <div>
@@ -1029,7 +1008,7 @@
         </form>
     </div>
 
-    <script src="/js/http.js"></script>
-    <script src="/js/storefront.js"></script>
+    <script src="/js/http.js?v={{ filemtime(public_path('js/http.js')) }}"></script>
+    <script src="/js/storefront.js?v={{ filemtime(public_path('js/storefront.js')) }}"></script>
 </body>
 </html>

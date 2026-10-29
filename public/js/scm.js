@@ -4,6 +4,8 @@
     const money = n => new Intl.NumberFormat('es-MX', {style:'currency', currency:'MXN'}).format(n);
     const date = v => v ? new Date(v).toLocaleString('es-MX') : '—';
     const admin = document.body.dataset.role === 'admin';
+    const manage = ['admin','logistica'].includes(document.body.dataset.role);
+    const operate = ['admin','logistica','usuario'].includes(document.body.dataset.role);
     const state = {suppliers:[], products:[], productPage:1, orderPage:1, historyPage:1, selected:null, productRevision:0, orderRevision:0};
     const keys = new WeakMap();
     let noticeTimer;
@@ -27,8 +29,11 @@
     }
     async function action(element, fn) {
         if (element?.dataset.busy) return;
+        const submitting = element?.form && element.type === 'submit';
+        const label = element?.innerHTML;
         if (element) {element.dataset.busy = '1'; element.disabled = true;}
-        try {await fn();} catch (e) {console.error(e); notice(e.message || 'No se pudo completar la operación. Revisa la consola (F12).', true);} finally {if (element) {delete element.dataset.busy; element.disabled = false;}}
+        if (submitting) element.textContent = 'Procesando…';
+        try {await fn();} catch (e) {console.error(e); notice(e.message || 'No se pudo completar la operación.', true);} finally {if (element) {delete element.dataset.busy; element.disabled = false;} if (submitting) element.innerHTML = label;}
     }
     function tab(id) {
         document.querySelectorAll('.panel').forEach(el => el.hidden = el.id !== id);
@@ -38,7 +43,7 @@
     function close(id) {$(id).close();}
     function field(form, name) {return form.elements.namedItem(name);}
     function values(form) {return Object.fromEntries(new FormData(form));}
-    function requestKey(form) {if (!keys.has(form)) keys.set(form, crypto.randomUUID()); return keys.get(form);}
+    function requestKey(form) {if (!keys.has(form)) keys.set(form, HF.uuid()); return keys.get(form);}
     function pagination(selector, data, kind) {
         $(selector).innerHTML = `<button data-page="${kind}" data-number="${data.current_page-1}" ${data.current_page<=1?'disabled':''}>Anterior</button><span>${data.total} registros · ${data.current_page}/${data.last_page}</span><button data-page="${kind}" data-number="${data.current_page+1}" ${data.current_page>=data.last_page?'disabled':''}>Siguiente</button>`;
     }
@@ -48,12 +53,12 @@
         const data = await HF.request('/productos?'+query);
         if (revision !== state.productRevision) return;
         state.products = data.data;
-        $('#product-rows').innerHTML = data.data.map(p => `<tr><td><strong>${esc(p.nombre)}</strong><small>${esc(p.categoria)} · ${esc(p.proveedor||'Sin proveedor')}</small><small>${esc(p.ubicacion)}${p.activo?'':' · Oculto en tienda'}</small></td><td><span class="badge ${p.stock_bajo?'critical':''}">${p.stock_actual} ${p.stock_bajo?'· CRÍTICO':''}</span></td><td>${p.stock_minimo} / ${p.stock_objetivo}</td><td>${money(p.costo_unitario)}<small>Venta: ${money(p.precio_venta)}</small></td><td><span class="badge">${esc(p.estrategia_logistica)}</span></td><td><button data-history="${p.id}">Historial</button>${!p.deleted_at && admin?`<button data-edit-product="${p.id}">Editar</button><button data-strategy="${p.id}" data-value="${p.estrategia_logistica==='PUSH'?'PULL':'PUSH'}">Cambiar a ${p.estrategia_logistica==='PUSH'?'Pull':'Push'}</button><button class="danger" data-delete-product="${p.id}">Archivar</button>`:''}${p.deleted_at?'<span class="badge">Archivado</span>':''}</td></tr>`).join('') || '<tr><td colspan="6">Sin productos con estos filtros.</td></tr>';
+        $('#product-rows').innerHTML = data.data.map(p => `<tr><td><strong>${esc(p.nombre)}</strong><small>${esc(p.categoria)} · ${esc(p.proveedor||'Sin proveedor')}</small><small>${esc(p.ubicacion)}${p.activo?'':' · Oculto en tienda'}</small></td><td><span class="badge ${p.stock_bajo?'critical':''}">${p.stock_actual} ${p.stock_bajo?'· CRÍTICO':''}</span></td><td>${p.stock_minimo} / ${p.stock_objetivo}</td><td>${money(p.costo_unitario)}<small>Venta: ${money(p.precio_venta)}</small></td><td><span class="badge">${esc(p.estrategia_logistica)}</span></td><td><button data-history="${p.id}">Historial</button>${!p.deleted_at && manage?`<button data-edit-product="${p.id}">Editar</button><button data-strategy="${p.id}" data-value="${p.estrategia_logistica==='PUSH'?'PULL':'PUSH'}">Cambiar a ${p.estrategia_logistica==='PUSH'?'Pull':'Push'}</button><button class="danger" data-delete-product="${p.id}">Archivar</button>`:''}${p.deleted_at?'<span class="badge">Archivado</span>'+(manage?'<button data-restore-product="'+p.id+'" type="button">Restaurar</button>':''):''}</td></tr>`).join('') || '<tr><td colspan="6">Sin productos con estos filtros.</td></tr>';
         pagination('#product-pages', data, 'product');
     }
     async function loadSuppliers() {
         state.suppliers = await HF.request('/proveedores');
-        $('#supplier-rows').innerHTML = state.suppliers.map(p => `<tr><td>${esc(p.nombre)}</td><td>${esc(p.contacto)}</td><td>${esc(p.correo)}</td><td>${esc(p.telefono)}</td><td>${admin?`<button data-edit-supplier="${p.id}">Editar</button><button class="danger" data-delete-supplier="${p.id}">Eliminar</button>`:'Consulta'}</td></tr>`).join('') || '<tr><td colspan="5">Registra el primer proveedor para asociarlo al catálogo.</td></tr>';
+        $('#supplier-rows').innerHTML = state.suppliers.map(p => `<tr><td>${esc(p.nombre)}</td><td>${esc(p.contacto)}</td><td>${esc(p.correo)}</td><td>${esc(p.telefono)}</td><td>${manage?`<button data-edit-supplier="${p.id}">Editar</button><button class="danger" data-delete-supplier="${p.id}">Eliminar</button>`:'Consulta'}</td></tr>`).join('') || '<tr><td colspan="5">Registra el primer proveedor para asociarlo al catálogo.</td></tr>';
         const select = $('#product-form select[name="proveedor_id"]');
         if (select) {const chosen = select.value; select.innerHTML = '<option value="">Sin proveedor</option>'+state.suppliers.map(p=>`<option value="${p.id}">${esc(p.nombre)}</option>`).join(''); select.value = chosen;}
     }
@@ -62,7 +67,7 @@
         const query = new URLSearchParams(values($('#order-filter'))); query.set('page', page);
         const data = await HF.request('/pedidos?'+query);
         if (revision !== state.orderRevision) return;
-        $('#order-rows').innerHTML = data.data.map(p=>`<tr><td><strong>#${p.id} · ${esc(p.producto?.name)}</strong><small>Responsable: ${esc(p.usuario?.name||'Sistema')}</small></td><td>${p.cantidad}</td><td>${p.tipo==='reposicion'?'Reposición':'Venta'}<small>${p.automatico?'Push automático':'Manual'}</small></td><td><span class="badge ${p.estado==='pendiente'?'critical':''}">${esc(p.estado)}</span></td><td>${date(p.created_at)}<small>Surtido: ${date(p.fecha_surtido)}</small></td><td>${p.estado==='pendiente'?`<button class="primary" data-fulfill="${p.id}">Marcar surtido</button>`:'Registrado'}</td></tr>`).join('') || '<tr><td colspan="6">Sin pedidos con estos filtros.</td></tr>';
+        $('#order-rows').innerHTML = data.data.map(p=>`<tr><td><strong>#${p.id} · ${esc(p.producto?.name)}</strong><small>Responsable: ${esc(p.usuario?.name||'Sistema')}</small></td><td>${p.cantidad}</td><td>${p.tipo==='reposicion'?'Reposición':'Venta'}<small>${p.automatico?'Push automático':'Manual'}</small></td><td><span class="badge ${p.estado==='pendiente'?'critical':''}">${esc(p.estado)}</span></td><td>${date(p.created_at)}<small>Surtido: ${date(p.fecha_surtido)}</small></td><td>${p.estado==='pendiente' && operate?`<button class="primary" data-fulfill="${p.id}">Marcar surtido</button>`:'Registrado'}</td></tr>`).join('') || '<tr><td colspan="6">Sin pedidos con estos filtros.</td></tr>';
         pagination('#order-pages', data, 'order');
     }
     function bars(rows, label, amount, suffix) {
@@ -102,7 +107,7 @@
         state.historyPage = page;
         const [p,data] = await Promise.all([HF.request('/productos/'+state.selected),HF.request(`/productos/${state.selected}/movimientos?page=${page}`)]);
         $('#history-title').textContent = 'Movimientos · '+p.nombre; $('#history-stock').textContent = `Stock disponible: ${p.stock_actual} · mínimo: ${p.stock_minimo} · ${p.estrategia_logistica}${p.deleted_at?' · Archivado':''}`;
-        const form = $('#movement-form'); form.hidden = Boolean(p.deleted_at); $('#movement-hint').hidden = Boolean(p.deleted_at); field(form,'producto_id').value = p.id;
+        const form = $('#movement-form'); form.hidden = Boolean(p.deleted_at) || !operate; $('#movement-hint').hidden = Boolean(p.deleted_at); field(form,'producto_id').value = p.id;
         $('#history-rows').innerHTML = data.data.map(m=>`<tr><td>${date(m.fecha)}<small>${esc(m.usuario?.name||'Sistema')}</small></td><td>${esc(m.tipo)}<small>${esc(m.motivo)}</small></td><td>${m.cantidad}</td><td>${m.stock_anterior} → ${m.stock_resultante}</td><td>${esc(m.referencia||'—')}${m.pedido_id?`<small>Pedido SCM #${m.pedido_id}</small>`:''}</td></tr>`).join('') || '<tr><td colspan="5">Sin movimientos registrados.</td></tr>';
         pagination('#history-pages', data, 'history');
     }
@@ -120,6 +125,7 @@
             else if (b.id==='new-product') await productEditor();
             else if (b.dataset.editProduct) await productEditor(Number(b.dataset.editProduct));
             else if (b.dataset.deleteProduct) {if(!confirm('¿Archivar este producto? Su historial se conserva. Requiere stock cero y ningún pedido pendiente.'))return; await HF.request('/productos/'+b.dataset.deleteProduct,'DELETE'); await refreshInventory(); notice('Producto archivado.');}
+            else if (b.dataset.restoreProduct) {await HF.request('/productos/'+b.dataset.restoreProduct+'/restaurar','PUT',{});await refreshInventory();notice('Producto restaurado.');}
             else if (b.dataset.strategy) {await HF.request(`/productos/${b.dataset.strategy}/estrategia`,'PUT',{estrategia_logistica:b.dataset.value}); await refreshInventory(); notice('Estrategia actualizada. Revisa los pedidos pendientes.');}
             else if (b.id==='new-supplier') supplierEditor();
             else if (b.dataset.editSupplier) supplierEditor(Number(b.dataset.editSupplier));
@@ -131,6 +137,7 @@
             else if (b.dataset.page) {const page=Number(b.dataset.number);if(b.dataset.page==='product')await loadProducts(page);if(b.dataset.page==='order')await loadOrders(page);if(b.dataset.page==='history')await loadHistory(page);}
         });
     });
+    document.addEventListener('invalid', e => notice(e.target.validationMessage, true), true);
     document.addEventListener('submit', e => {
         const form = e.target;
         e.preventDefault();

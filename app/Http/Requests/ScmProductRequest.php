@@ -9,7 +9,7 @@ class ScmProductRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->role === 'admin';
+        return $this->user()?->hasPermission('scm.manage') ?? false;
     }
 
     public function rules(): array

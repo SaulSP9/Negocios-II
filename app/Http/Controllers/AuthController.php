@@ -13,7 +13,7 @@ class AuthController extends Controller
 {
     public function session(Request $request)
     {
-        return ['user' => $request->user(), 'csrf_token' => csrf_token()];
+        return ['user' => $request->user()?->append(['permissions', 'role_label', 'home']), 'csrf_token' => csrf_token()];
     }
 
     public function login(Request $request)
