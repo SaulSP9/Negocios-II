@@ -1,21 +1,17 @@
-<!doctype html>
-<html lang="es">
-<head>
-    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}"><title>HFSTUDIOS | CRM</title>
-    <link rel="stylesheet" href="/css/crm.css">
-    <script src="/js/http.js?v={{ filemtime(public_path('js/http.js')) }}" defer></script><script src="/js/crm.js?v={{ filemtime(public_path('js/crm.js')) }}" defer></script>
-</head>
-<body>
-<header><a href="/" class="brand">HFSTUDIOS <small>CRM</small></a><div>@include('partials.module-links') · {{ auth()->user()->name }} · {{ auth()->user()->role_label }} <button id="logout" type="button">Cerrar sesión</button></div></header>
-<div class="shell">
-    <aside><p>RELACIONES CON CLIENTES</p><nav>
-        <button data-tab="dashboard" class="selected">Dashboard</button><button data-tab="clients">Clientes</button>
-        <button data-tab="activity">Mi actividad</button><button data-tab="contacts">Mensajes de contacto</button>
-        @if(auth()->user()->role === 'admin')<button data-tab="users">Equipo y permisos</button>@endif
-        <a href="/">Volver a la tienda</a>
-    </nav><small>Seguimiento centralizado.<br>Alertas tras 30 días sin contacto.</small></aside>
-    <main>
+@extends('gestion.layout', ['module' => 'crm'])
+
+@section('module-navigation')
+    <button type="button" data-tab="dashboard" aria-controls="dashboard" aria-current="page">Resumen</button>
+    <button type="button" data-tab="clients" aria-controls="clients">Clientes</button>
+    <button type="button" data-tab="activity" aria-controls="activity">Mi actividad</button>
+    <button type="button" data-tab="contacts" aria-controls="contacts">Mensajes de contacto</button>
+    @if(auth()->user()->hasPermission('users'))
+        <button type="button" data-tab="users" aria-controls="users">Equipo y permisos</button>
+    @endif
+@endsection
+
+@section('content')
+    <main class="management-content">
         <div id="message" role="status" hidden></div>
         <section id="dashboard" class="tab"><div class="heading"><div><span class="eyebrow">VISTA GENERAL</span><h1>La relación, en números.</h1></div><button id="refresh-metrics">Actualizar</button></div>
             <div id="counters" class="cards"></div><div class="two-col"><article><h2>Etapas CRM</h2><div id="chart" role="img" aria-label="Clientes por etapa CRM"></div></article>
@@ -30,11 +26,11 @@
         </section>
         <section id="activity" class="tab" hidden><div class="heading"><div><span class="eyebrow">TU SEGUIMIENTO</span><h1>Mi actividad</h1></div></div><article><div id="my-activity" class="timeline"></div><div id="activity-pages" class="pagination"></div></article></section>
         <section id="contacts" class="tab" hidden><div class="heading"><div><span class="eyebrow">BANDEJA DE ENTRADA</span><h1>Mensajes de contacto</h1></div></div><article><div id="contact-list"></div><div id="contact-pages" class="pagination"></div></article></section>
-        @if(auth()->user()->role === 'admin')
+        @if(auth()->user()->hasPermission('users'))
         <section id="users" class="tab" hidden><div class="heading"><div><span class="eyebrow">ADMINISTRACIÓN</span><h1>Equipo y permisos</h1></div></div><div class="two-col"><article><h2>Crear cuenta del equipo</h2><form id="user-form">
             <label>Nombre<input name="name" required minlength="2" maxlength="120"></label><label>Correo<input name="email" type="email" required></label>
             <label>Contraseña<input name="password" type="password" required minlength="12" maxlength="128" autocomplete="new-password"></label>
-            <label>Rol<select name="role"><option value="ventas">Ventas: CRM y órdenes ERP</option><option value="logistica">Logística: SCM y entregas</option><option value="usuario">Operador: CRM y operación</option><option value="admin">Administrador: todos los módulos</option></select></label><button type="submit" class="primary">Crear usuario</button></form><a href="/erp#users">Cambiar roles desde ERP</a></article>
+            <label>Rol<select name="role"><option value="ventas">Ventas: CRM y órdenes ERP</option><option value="logistica">Logística: SCM y entregas</option><option value="usuario">Operador: CRM y operación</option><option value="admin">Administrador: todos los módulos</option></select></label><button type="submit" class="primary">Crear usuario</button></form><a href="/gestion/operaciones#users">Cambiar roles desde ERP</a></article>
             <article><h2>Cuentas registradas</h2><div id="user-list"></div></article></div></section>
         @endif
         <section id="detail" class="tab" hidden><button id="back-clients">← Volver a clientes</button><div class="heading"><div><span class="eyebrow">HISTORIAL CENTRALIZADO</span><h1 id="detail-title"></h1></div></div><article id="detail-info"></article>
@@ -45,11 +41,10 @@
             <article><h2>Línea de tiempo</h2><div id="history" class="timeline"></div></article>
         </section>
     </main>
-</div>
 <dialog id="client-dialog"><form id="client-form"><div class="heading"><h2 id="client-form-title">Nuevo cliente</h2><button type="button" id="close-client">Cerrar</button></div>
     <label>Nombre<input name="nombre" required minlength="2" maxlength="120"></label><label>Correo<input name="correo" type="email" required maxlength="255"></label>
     <label>Teléfono<input name="telefono" maxlength="25" placeholder="+52 449 123 4567"></label><label>Empresa<input name="empresa" maxlength="150"></label>
     <div class="two-col"><label>Estado<select name="estado"><option value="activo">Activo</option><option value="inactivo">Inactivo</option></select></label><label>Etapa CRM<select name="etapa_crm"><option>Prospecto</option><option>Activo</option><option>Frecuente</option><option>Inactivo</option></select></label></div>
     <p id="client-error" role="alert"></p><button class="primary">Guardar cliente</button>
 </form></dialog>
-</body></html>
+@endsection

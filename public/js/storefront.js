@@ -75,7 +75,8 @@ document.addEventListener('alpine:init', () => {
                     try {
                         const session=await HF.request('/sesion'); this.setSession(session.user);
                         await this.refreshPublic(); if(this.isLoggedIn) await this.refreshPrivate();
-                        if(new URLSearchParams(location.search).get('vista')==='login') this.currentRoute='login';
+                        const requestedView = new URLSearchParams(location.search).get('vista');
+                        if (requestedView === 'login' || (requestedView === 'admin' && this.isAdmin)) this.currentRoute = requestedView;
                     } catch(e) {this.showToast(e.message);} finally {this.ready=true;}
                     this.timer=setInterval(()=>{if(this.auction.timerSeconds>0)this.auction.timerSeconds--;},1000);
                 },
@@ -104,7 +105,7 @@ document.addEventListener('alpine:init', () => {
                     const item=this.cart.find(i=>i.id===product.id);
                     if(!product.active||product.stock<1||(item&&item.quantity>=Math.min(product.stock,99))){this.showToast('Existencias insuficientes.');return;}
                     if(item)item.quantity++;else this.cart.push({...product,cartItemId:product.id,quantity:1});
-                    this.showToast('Agregado a la bolsa');this.cartOpen=true;
+                    this.showToast('Agregado al carrito');this.cartOpen=true;
                 },
                 increaseQty(index){const i=this.cart[index];if(i.quantity<Math.min(i.stock,99))i.quantity++;else this.showToast('Límite de existencias.');},
                 decreaseQty(index){if(this.cart[index].quantity>1)this.cart[index].quantity--;else this.removeFromCart(index);},

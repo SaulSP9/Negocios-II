@@ -1,41 +1,26 @@
-<!doctype html>
-<html lang="es">
-<head>
-    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}"><title>HFSTUDIOS | ERP</title>
-    <link rel="stylesheet" href="/css/erp.css?v={{ filemtime(public_path('css/erp.css')) }}">
-    <script src="/js/http.js?v={{ filemtime(public_path('js/http.js')) }}" defer></script>
-    <script src="/js/erp.js?v={{ filemtime(public_path('js/erp.js')) }}" defer></script>
-</head>
-@php($u = auth()->user())
-<body data-permissions='@json($u->permissions)' data-role="{{ $u->role }}" data-user-id="{{ $u->id }}">
-<aside class="sidebar">
-    <a class="brand" href="/erp">HF<span>STUDIOS</span><small>BUSINESS PLATFORM</small></a>
-    <div class="workspace">EMPRESA / ETAPA 03</div>
-    <nav aria-label="Navegación empresarial">
-        <button type="button" data-panel="dashboard" aria-current="page"><span>01</span> Inicio ERP</button>
-        @if($u->hasPermission('crm'))<a href="/crm"><span>02</span> Clientes · CRM</a>@endif
-        @if($u->hasPermission('scm.read'))<a href="/scm"><span>03</span> Inventario · SCM</a>@endif
-        <button type="button" data-panel="orders"><span>04</span> Órdenes de clientes</button>
-        @if($u->hasPermission('erp.write'))<button type="button" data-panel="new"><span>＋</span> Nueva orden</button>@endif
-        <button type="button" data-panel="reports"><span>05</span> Reportes</button>
-        <button type="button" data-panel="resources"><span>06</span> Recursos internos</button>
-        <button type="button" data-panel="maturity"><span>07</span> Nivel ERP</button>
-        @if($u->hasPermission('users'))<button type="button" data-panel="users"><span>08</span> Usuarios y roles</button>@endif
-        <a href="/"><span>↗</span> Ir a la tienda</a>
-    </nav>
-    <div class="sidebar-note"><span class="live-dot"></span> CRM + SCM + ERP<p>Una operación. Información compartida.</p></div>
-</aside>
-<div class="workspace-content">
-    <header class="topbar"><div><span class="eyebrow">CENTRO DE OPERACIONES</span><strong>Planificación empresarial</strong></div><div class="account"><span>{{ $u->name }}<small>{{ $u->role_label }}</small></span><button id="logout" type="button">Cerrar sesión</button></div></header>
-    <main>
+@extends('gestion.layout', ['module' => 'erp'])
+
+@section('module-navigation')
+    @php($u = auth()->user())
+    <button type="button" data-panel="dashboard" aria-controls="dashboard" aria-current="page">Inicio ERP</button>
+    <button type="button" data-panel="orders" aria-controls="orders">Órdenes de clientes</button>
+    @if($u->hasPermission('erp.write'))<button type="button" data-panel="new" aria-controls="new">Nueva orden</button>@endif
+    <button type="button" data-panel="reports" aria-controls="reports">Reportes</button>
+    <button type="button" data-panel="resources" aria-controls="resources">Recursos internos</button>
+    <button type="button" data-panel="maturity" aria-controls="maturity">Nivel ERP</button>
+    @if($u->hasPermission('users'))<button type="button" data-panel="users" aria-controls="users">Usuarios y roles</button>@endif
+@endsection
+
+@section('content')
+    @php($u = auth()->user())
+    <main class="management-content">
         <noscript>Activa JavaScript para utilizar los formularios del sistema.</noscript>
         <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
         <section id="dashboard" class="panel">
             <div class="page-heading"><div><p class="eyebrow">VISIÓN GENERAL</p><h1>Tu negocio, conectado.</h1><p>Clientes, operaciones e inventario en un mismo lugar.</p></div><button type="button" id="refresh">Actualizar datos</button></div>
             <div id="kpis" class="kpis" aria-label="Indicadores empresariales"><p>Cargando indicadores…</p></div>
             <div class="grid-main"><article><div class="article-heading"><div><p class="eyebrow">EVOLUCIÓN COMERCIAL</p><h2>Ventas de los últimos 6 meses</h2></div><span class="pill">MXN</span></div><div id="sales-chart" class="sales-chart" role="img" aria-label="Ventas por mes"></div><p class="hint">Ventas ERP procesadas y pedidos de tienda enviados o entregados.</p></article><article><p class="eyebrow">CATÁLOGO</p><h2>Productos más vendidos</h2><div id="top-chart"></div></article></div>
-            <div class="grid-main"><article><div class="article-heading"><div><p class="eyebrow">ATENCIÓN OPERATIVA</p><h2>Inventario crítico</h2></div><a href="/scm">Abrir SCM ↗</a></div><div id="critical-stock"></div></article><article><p class="eyebrow">FLUJO EMPRESARIAL</p><h2>Integración entre módulos</h2><div id="integration"></div></article></div>
+            <div class="grid-main"><article><div class="article-heading"><div><p class="eyebrow">ATENCIÓN OPERATIVA</p><h2>Inventario crítico</h2></div><a href="/gestion/inventario">Abrir inventario ↗</a></div><div id="critical-stock"></div></article><article><p class="eyebrow">FLUJO EMPRESARIAL</p><h2>Integración entre módulos</h2><div id="integration"></div></article></div>
         </section>
         <section id="orders" class="panel" hidden>
             <div class="page-heading"><div><p class="eyebrow">OPERACIONES / ERP</p><h1>Órdenes de clientes</h1><p>Consulta la venta, sus movimientos de inventario y su historial.</p></div>@if($u->hasPermission('erp.write'))<button type="button" class="primary" data-panel="new">＋ Nueva orden</button>@endif</div>
@@ -61,7 +46,6 @@
         @endif
         <footer>HFSTUDIOS · CRM + SCM + ERP <span>Información compartida. Operaciones trazables.</span></footer>
     </main>
-</div>
 <dialog id="order-dialog" aria-labelledby="order-title"><div class="article-heading"><h2 id="order-title">Detalle de orden</h2><button type="button" data-close="order-dialog">Cerrar</button></div><div id="order-detail"></div><div class="actions"><button type="button" id="print-order">Imprimir / PDF</button></div></dialog>
 <dialog id="snapshot-dialog" aria-labelledby="snapshot-title"><div class="article-heading"><h2 id="snapshot-title">Corte empresarial</h2><button type="button" data-close="snapshot-dialog">Cerrar</button></div><div id="snapshot-detail"></div></dialog>
 @if($u->hasPermission('erp.write'))
@@ -73,5 +57,4 @@
 @if($u->hasPermission('users'))
 <dialog id="user-dialog" aria-labelledby="user-title"><div class="article-heading"><h2 id="user-title">Cuenta del equipo</h2><button type="button" data-close="user-dialog">Cerrar</button></div><form id="user-form"><label>Nombre<input name="name" required minlength="2" maxlength="120"></label><label>Correo<input name="email" type="email" required maxlength="255"></label><label>Contraseña<input name="password" type="password" required minlength="12" maxlength="128" autocomplete="new-password"></label><label>Rol<select name="role"><option value="ventas">Ventas</option><option value="logistica">Logística</option><option value="usuario">Operador</option><option value="admin">Administrador</option></select></label><button type="submit" class="primary">Crear usuario</button></form></dialog>
 @endif
-</body>
-</html>
+@endsection

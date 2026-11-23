@@ -1,19 +1,22 @@
-<!doctype html>
-<html lang="es">
-<head>
-    <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}"><title>HFSTUDIOS | SCM</title>
-    <link rel="stylesheet" href="/css/scm.css">
-    <script src="/js/http.js?v={{ filemtime(public_path('js/http.js')) }}" defer></script><script src="/js/scm.js?v={{ filemtime(public_path('js/scm.js')) }}" defer></script>
-</head>
-<body data-role="{{ auth()->user()->role }}">
-<header><a class="brand" href="/">HFSTUDIOS <small>SCM</small></a><div>@include('partials.module-links')<span>{{ auth()->user()->name }} · {{ auth()->user()->role_label }}</span><button id="logout" type="button">Salir</button></div></header>
-<nav aria-label="Módulos SCM"><button data-tab="dashboard" aria-current="page" type="button">Resumen</button><button data-tab="catalog" type="button">Catálogo e inventario</button><button data-tab="suppliers" type="button">Proveedores</button><button data-tab="orders" type="button">Pedidos SCM</button><button data-tab="maturity" type="button">Madurez</button></nav>
-<main>
-    <div class="page-title"><div><p class="eyebrow">ETAPA 2 · CADENA DE SUMINISTRO</p><h1>Inventario con trazabilidad.</h1><p>Consulta existencias, recibe pedidos y compara las estrategias Push y Pull.</p></div><button id="refresh" type="button">Actualizar datos</button></div>
+@extends('gestion.layout', ['module' => 'scm'])
+
+@section('module-navigation')
+    <button type="button" data-tab="dashboard" aria-controls="dashboard" aria-current="page">Resumen</button>
+    <button type="button" data-tab="catalog" aria-controls="catalog">Catálogo e inventario</button>
+    <button type="button" data-tab="suppliers" aria-controls="suppliers">Proveedores</button>
+    <button type="button" data-tab="orders" aria-controls="orders">Pedidos SCM</button>
+    <button type="button" data-tab="reports" aria-controls="reports">Reportes</button>
+    <button type="button" data-tab="maturity" aria-controls="maturity">Madurez</button>
+@endsection
+
+@section('content')
+<main class="management-content">
     <div id="notice" role="status" aria-live="polite" hidden></div>
     <section id="dashboard" class="panel">
+        <div class="page-title"><div><p class="eyebrow">ETAPA 2 · CADENA DE SUMINISTRO</p><h1>Inventario con trazabilidad.</h1><p>Consulta existencias, recibe pedidos y compara las estrategias Push y Pull.</p></div><button id="refresh" type="button">Actualizar datos</button></div>
         <div id="counters" class="cards" aria-label="Indicadores de inventario"></div>
+    </section>
+    <section id="reports" class="panel" hidden>
         <div class="section-heading"><h2>Reportes</h2><a class="button" href="/scm/reportes/csv">Descargar CSV</a></div>
         <div class="two-col"><article><h3>Productos más vendidos</h3><p>Unidades históricas: ventas manuales surtidas y pedidos de tienda enviados o entregados.</p><div id="top-chart"></div></article><article><h3>Comparación logística</h3><p>Existencias disponibles por estrategia y cantidad de productos en nivel crítico.</p><div id="strategy-chart"></div></article></div>
         <div class="two-col"><article><h3>Inventario crítico</h3><p>Stock disponible menor o igual al mínimo configurado.</p><div id="critical"></div></article><article><h3>Rotación lenta</h3><p>Productos con stock y 0–2 unidades vendidas en los últimos 30 días.</p><div id="slow"></div></article></div>
@@ -114,4 +117,4 @@
 </dialog>
 
 <footer>HFSTUDIOS · CRM y SCM · Etapas 1 y 2</footer>
-</body></html>
+@endsection

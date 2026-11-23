@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Cliente;
+use App\Models\Order;
 use App\Models\Orden;
 use App\Models\Product;
 use App\Models\User;
@@ -11,11 +12,11 @@ use Illuminate\Validation\ValidationException;
 
 class ErpOrders
 {
-    public function __construct(private readonly InventoryService $inventory) {}
+    public function __construct(private readonly InventoryService $inventory, private readonly WalletLedger $ledger) {}
 
-    public function create(array $data, User $actor, bool $process): Orden
+    public function create(array $data, User $actor, bool $process, ?int $settledTotal = null): Orden
     {
-        return DB::transaction(function () use ($data, $actor, $process) {
+        return DB::transaction(function () use ($data, $actor, $process, $settledTotal) {
             // Serializa reintentos de una misma cuenta antes de consultar la clave única.
             User::whereKey($actor->id)->lockForUpdate()->firstOrFail();
             $rows = collect($data['productos'])->sortBy('producto_id')->values();
@@ -44,7 +45,7 @@ class ErpOrders
                     'precio_unitario_cents' => $product->price_cents, 'subtotal_cents' => $subtotal]);
                 $total += $subtotal;
             }
-            $order->update(['folio' => 'OR-'.str_pad((string) $order->id, 6, '0', STR_PAD_LEFT), 'total_cents' => $total]);
+            $order->update(['folio' => 'OR-'.str_pad((string) $order->id, 6, '0', STR_PAD_LEFT), 'total_cents' => $settledTotal ?? $total]);
             $this->history($order, $actor, 'creada', 'Orden creada con cliente CRM y precios del catálogo SCM.');
 
             return $process ? $this->process($order->id, $actor) : $order;
@@ -96,6 +97,7 @@ class ErpOrders
 
         return DB::transaction(function () use ($id, $state, $actor, $reason) {
             $order = Orden::lockForUpdate()->findOrFail($id);
+            $shopOrder = Order::where('orden_empresarial_id', $order->id)->lockForUpdate()->first();
             if ($state === 'completada') {
                 abort_unless($actor->hasPermission('erp.complete'), 403, 'Solo administración o logística puede completar entregas.');
                 if ($order->estado === 'completada') {
@@ -103,6 +105,7 @@ class ErpOrders
                 }
                 abort_unless($order->estado === 'procesada', 409, 'Primero procesa la orden antes de completar su entrega.');
                 $order->update(['estado' => 'completada']);
+                $shopOrder?->update(['status' => 'Entregado']);
                 $this->history($order, $actor, 'completada', 'Entrega confirmada. El inventario ya fue descontado al procesar.');
             } else {
                 abort_unless($actor->hasPermission('erp.cancel') || $actor->role === 'admin', 403);
@@ -110,6 +113,7 @@ class ErpOrders
                 if ($order->estado === 'cancelada') {
                     return $order;
                 }
+                abort_if($shopOrder && $shopOrder->status !== 'Pagado', 409, 'Solo se puede cancelar una compra que todavía no se ha enviado.');
                 if (in_array($order->estado, ['procesada', 'completada'], true)) {
                     foreach ($order->productos()->orderBy('producto_id')->get() as $line) {
                         abort_if(! Product::find($line->producto_id), 409, 'El producto está archivado. Reactívalo antes de devolver existencias.');
@@ -118,6 +122,16 @@ class ErpOrders
                     }
                 }
                 $order->update(['estado' => 'cancelada', 'cancelada_at' => now()]);
+                if ($shopOrder) {
+                    $payment = $shopOrder->pago()->lockForUpdate()->firstOrFail();
+                    if ($payment->metodo_pago === 'monedero') {
+                        $this->ledger->post($shopOrder->cliente_id, $payment->monto_cents, 'reembolso', 'Reembolso de pedido', [
+                            'order_id' => $shopOrder->id, 'user_id' => $actor->id, 'metodo' => 'monedero',
+                        ]);
+                    }
+                    $payment->update(['estado' => 'Reembolsado']);
+                    $shopOrder->update(['status' => 'Cancelado']);
+                }
                 $this->history($order, $actor, 'cancelada', 'Orden cancelada. '.($reason ?? 'Sin observaciones.'));
                 $order->procesos()->create(['usuario_id' => $actor->id, 'tipo' => 'cancelacion', 'estado' => 'completado', 'finalizado_at' => now(),
                     'pasos' => ['Orden bloqueada', 'Existencias restituidas si hubo venta', 'Venta excluida de reportes', 'Historial conservado']]);
