@@ -4,19 +4,24 @@ Laravel 12. Los módulos comparten clientes, catálogo e inventario. Esta edici�
 
 - [Inicio rápido para la entrega U4](docs/TIENDA_U4.md).
 
-- [Instalación y actualización en Laragon](docs/TIENDA_U4.md#laragon).
+- [Instalación y actualización en Laragon](docs/TIENDA_U4.md#laragon-desde-el-zip).
 - [Matriz del PDF y evidencias](docs/MATRIZ_U3.md).
 - [Recorrido de presentación](docs/PRESENTACION_U3.md).
 - [Validación y alcance de las pruebas](docs/VALIDACION_U3.md).
 - [Código completo por ruta](docs/CODIGO_POR_RUTA_U3.md).
 - [Guía con botones para copiar](docs/GUIA_COPIAR_PEGAR_U3.html).
 
-## Instalación nueva
+## Instalación desde GitHub en Laragon
 
-Usa PHP 8.2 o superior con Composer. La entrega incluye los recursos compilados. Para recompilarlos, usa Node.js compatible con Vite 7 (20.19+ o 22.12+).
+Usa PHP 8.2 o superior con Composer y Node.js compatible con Vite 7 (20.19+ o 22.12+). En la terminal CMD de Laragon, clona la rama principal, instala las dependencias y compila los recursos antes del diagnóstico.
 
 ```bat
+cd /d C:\laragon\www
+git clone https://github.com/SaulSP9/Negocios-II.git
+cd Negocios-II
 composer install
+npm ci
+npm run build
 php -r "file_exists('.env') || copy('.env.example', '.env');"
 php artisan key:generate
 php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"
@@ -26,6 +31,8 @@ php artisan serve --host=127.0.0.1 --port=8000
 ```
 
 Abre `http://127.0.0.1:8000/?vista=cuenta`. Consulta los accesos de demostración en la [guía de la Unidad 4](docs/TIENDA_U4.md#accesos-de-demostración). El personal entra a `/gestion`. El registro público crea cuentas de cliente.
+
+El ZIP incluye los recursos compilados. Para esa edición, usa la [instalación desde el ZIP](docs/TIENDA_U4.md#laragon-desde-el-zip).
 
 ## Actualizar una instalación existente
 
@@ -38,7 +45,7 @@ php artisan migrate
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-Después recarga con Ctrl+F5. Si editas los recursos de Vite, ejecuta `npm ci` y `npm run build`.
+Si actualizaste desde GitHub, ejecuta también `npm ci` y `npm run build` antes de iniciar el servidor. Después recarga con Ctrl+F5.
 
 ## Demostración y pruebas
 

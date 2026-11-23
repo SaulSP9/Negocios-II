@@ -9,6 +9,7 @@ final class Editorial
 
     public const SECTIONS = [
         'coleccion' => ['01 / COLECCIÓN', 'LA COLECCIÓN.', 'Siluetas relajadas, capas y básicos para todos los días.'],
+        'novedades' => [null, 'NOVEDADES.', 'Últimas incorporaciones al catálogo.'],
         'tienda' => ['02 / INVENTARIO COMPLETO', 'LA TIENDA COMPLETA.', 'Todas las piezas, ordenadas por familia. Sin complicaciones.'],
         'campana' => ['03 / CAMPAÑA', 'LA CAMPAÑA.', 'Lanzamientos recientes y promociones vigentes.'],
         'comunidad' => ['04 / COMUNIDAD', 'LA COMUNIDAD.', 'Conversa con otros miembros de HF Studios.'],
@@ -26,7 +27,9 @@ final class Editorial
 
     public static function section(string $key): string
     {
-        return self::ROOT.'secciones/'.$key.'.webp';
+        $photo = $key === 'novedades' ? 'campana' : $key;
+
+        return self::ROOT.'secciones/'.$photo.'.webp';
     }
 
     public static function slide(string $key): string

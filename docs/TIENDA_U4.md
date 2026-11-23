@@ -4,7 +4,11 @@
 
 El proyecto usa Laravel 12. Esta edición se verificó con PHP 8.4.27. Para SQLite habilita `pdo_sqlite`; para MySQL habilita `pdo_mysql`. Composer instala las dependencias a partir de `composer.lock`. El ZIP incluye los recursos compilados y las fotografías locales.
 
-### Laragon
+### Laragon desde GitHub
+
+Sigue la [instalación desde GitHub](../README.md#instalación-desde-github-en-laragon). Después de clonar, ejecuta `npm ci` y `npm run build` en la carpeta del proyecto. El diagnóstico y la tienda clásica usan el archivo `public/build/manifest.json` generado por Vite.
+
+### Laragon desde el ZIP
 
 Descomprime la carpeta en `C:\laragon\www`. Abre la terminal de Laragon en CMD y ejecuta:
 
@@ -16,6 +20,7 @@ if not exist database\database.sqlite type nul > database\database.sqlite
 php artisan key:generate
 php artisan optimize:clear
 php artisan migrate --seed
+php artisan hf:diagnostico
 php artisan serve
 ```
 
@@ -23,7 +28,7 @@ Abre [http://127.0.0.1:8000](http://127.0.0.1:8000) y entra en **Mi cuenta**. En
 
 ### Actualizar una instalación previa
 
-Conserva tu `.env`, la clave `APP_KEY` y tu base de datos. Si trabajas con SQLite, conserva `database/database.sqlite`. Detén el servidor, copia los archivos de la entrega y ejecuta `composer install`, `php artisan optimize:clear` y `php artisan migrate`. Inicia el servidor con `php artisan serve`. Si ya tenías la edición Ficha y Checkout, Laravel indicará que las migraciones están al día. Para crear los datos de demostración en una instalación nueva, usa `php artisan migrate --seed`.
+Conserva tu `.env`, la clave `APP_KEY` y tu base de datos. Si trabajas con SQLite, conserva `database/database.sqlite`. Detén el servidor, copia los archivos de la entrega y ejecuta `composer install`, `php artisan optimize:clear` y `php artisan migrate`. Si actualizaste desde GitHub, ejecuta también `npm ci` y `npm run build`. Inicia el servidor con `php artisan serve`. Si ya tenías la edición Cuenta y Gestión, Laravel indicará que las migraciones están al día. Para crear los datos de demostración en una instalación nueva, usa `php artisan migrate --seed`.
 
 Para usar MySQL, crea una base con `utf8mb4` y configura `DB_CONNECTION=mysql`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD` en `.env`. Después ejecuta las mismas migraciones.
 
@@ -62,7 +67,7 @@ El acceso presenta los formularios de inicio de sesión y registro en vistas ind
 
 ## Flujo de compra
 
-1. En **Colección**, filtra por familia, busca por nombre u ordena por precio, novedades y ventas. Los favoritos se guardan en el navegador.
+1. En **Novedades**, abre las últimas incorporaciones activas al catálogo. En **Colección**, filtra por familia, busca por nombre u ordena por precio, fecha de alta y ventas. Los favoritos se guardan en el navegador.
 2. Abre la ficha del producto para ver la foto y sus encuadres, el color, las tallas y la disponibilidad. Elige talla y cantidad y agrega la prenda. Las miniaturas presentan distintos encuadres de la fotografía disponible.
 3. En **Carrito**, ajusta cantidades y revisa los importes. Al pulsar **Continuar compra**, se abre `/checkout`. Si todavía no tienes sesión, inicia sesión o usa el acceso demo para regresar automáticamente al pago.
 4. En **Finalizar compra**, confirma la entrega y selecciona tarjeta, PayPal, transferencia o monedero. El cliente demo inicia con MXN 5,000. El resumen muestra los artículos, descuentos, impuestos y total.
@@ -89,11 +94,14 @@ Se conservan los nombres físicos previos `products`, `users`, `orders` y `order
 
 `POST /pagos/procesar` bloquea cuenta, carrito y existencias en orden estable. Valida cantidades agrupadas por producto, recalcula importes en centavos, registra el pago y procesa la orden ERP. La solicitud usa un UUID para devolver el mismo folio ante un reintento equivalente. Un cambio de stock, precio final cotizado o saldo impide completar la compra. La cancelación de una compra sin enviar restituye inventario y saldo de monedero cuando corresponde.
 
+El tablero, el CSV actual y los nuevos cortes empresariales contabilizan cada compra vinculada una vez, a través de la orden ERP. Los pedidos surtidos de tienda sin vínculo con ERP se suman por separado. El indicador de pedidos surtidos incluye ambos flujos. Los cortes guardados conservan las cifras de la fecha en que se generaron. Si necesitas cifras corregidas para la entrega, genera un corte nuevo.
+
 ## Rutas principales
 
 | Función | Rutas |
 | --- | --- |
 | Catálogo | `GET /catalogo?categoria=hoodies-outerwear&buscar=hoodie`, `GET /catalogo/{id}` |
+| Novedades | `/?vista=novedades`, `GET /catalogo?orden=nuevos` |
 | Gestión | `/gestion/clientes`, `/gestion/inventario`, `/gestion/operaciones`, `/gestion/tienda` |
 | Carrito | `POST /carrito/importar`, `POST /carrito/agregar`, `GET /carrito/{cliente_id}`, `PUT /carrito/item/{id}`, `DELETE /carrito/item/{id}`, `DELETE /carrito/vaciar/{cliente_id}` |
 | Checkout y recibo | `GET /checkout`, `GET /compras/{folio}` |

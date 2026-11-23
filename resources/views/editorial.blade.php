@@ -50,7 +50,7 @@
         @include('partials.commerce-navigation')
     @else
         @include('partials.site-ticker')
-        @include('partials.site-header')
+        @include('partials.site-header', ['activeStoreView' => $initialView])
     @endif
 
     <main id="contenido">
@@ -85,11 +85,11 @@
                 @if ($key !== 'cuenta')
                 <header class="section-lead">
                     <div>
-                        <p class="overline">{{ $index }}</p>
+                        @if ($index)<p class="overline">{{ $index }}</p>@endif
                         <h1 tabindex="-1">{{ $title }}</h1>
                         <p>{{ $description }}</p>
                     </div>
-                    <img src="{{ asset(Editorial::section($key)) }}" alt="Fotografía editorial de {{ Illuminate\Support\Str::after($index, ' / ') }}" width="1150" height="640" loading="lazy" onerror="this.onerror=null;this.src='{{ $fallback }}'">
+                    <img src="{{ asset(Editorial::section($key)) }}" alt="{{ $index ? 'Fotografía editorial de '.Illuminate\Support\Str::after($index, ' / ') : '' }}" width="1150" height="640" loading="lazy" onerror="this.onerror=null;this.src='{{ $fallback }}'">
                 </header>
                 @endif
 
@@ -112,6 +112,14 @@
                         </div>
                         <p class="result-count" id="catalog-count" aria-live="polite"></p>
                         <div class="product-grid" id="catalog-products" aria-live="polite"></div>
+                        @break
+                    @case('novedades')
+                        <div class="product-grid" id="new-arrival-products" aria-live="polite">
+                            <p class="empty">Cargando novedades…</p>
+                        </div>
+                        <div class="actions new-arrivals-actions">
+                            <a class="button" href="/catalogo?orden=nuevos">Ver catálogo completo ↗</a>
+                        </div>
                         @break
                     @case('tienda')
                         <div id="families"></div>

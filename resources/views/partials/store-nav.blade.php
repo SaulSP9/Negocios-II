@@ -1,5 +1,5 @@
 @php
-    $nav = ['coleccion' => 'Colección', 'campana' => 'Campaña', 'comunidad' => 'Comunidad', 'subasta' => 'Subasta',
+    $nav = ['coleccion' => 'Colección', 'novedades' => 'Novedades', 'campana' => 'Campaña', 'comunidad' => 'Comunidad', 'subasta' => 'Subasta',
         'tienda' => 'Tienda completa', 'mis-publicaciones' => 'Mis publicaciones', 'ayuda' => 'Ayuda', 'cuenta' => 'Mi cuenta'];
 @endphp
 <nav aria-label="Tienda" class="site-nav">

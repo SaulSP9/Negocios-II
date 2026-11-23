@@ -1,6 +1,6 @@
 import { $, all, action, empty, escape, fromForm, imageUrl, money, notify, pagination, request, showDialog } from './dom.js';
 import { refreshClocks, renderTicker, startCarousel } from './campaign.js';
-import { renderCampaign, renderCatalog, renderFamilies, toggleFavorite } from './catalog.js';
+import { grid, renderCampaign, renderCatalog, renderFamilies, toggleFavorite } from './catalog.js';
 import { addToCart, openCart, setProfile, setupCart, syncCart } from './cart.js';
 import { operationTab, orderRows, setOperator, setupOperations } from './operations.js';
 import { ticketFolio, ticketRows, ticketStatus, ticketTimeline } from './tickets.js';
@@ -190,6 +190,9 @@ async function go(url, { reload = false, focus = false } = {}) {
         if (!sorting.value) sorting.value = 'coleccion';
         $('#catalog-favorites').checked = params.get('favoritos') === '1';
         await loadCatalog();
+    } else if (view === 'novedades') {
+        const { productos } = await request('/catalogo?orden=nuevos');
+        $('#new-arrival-products').innerHTML = grid(productos.slice(0, 8));
     } else if (view === 'tienda') {
         renderFamilies(await request('/catalogo'));
     } else if (view === 'campana') {
@@ -439,7 +442,7 @@ setInterval(() => {
     if (active.length !== promos.length) {
         promos = active;
         renderTicker(promos);
-        if (view === 'coleccion' || view === 'tienda' || view === 'campana') action(null, () => go(null, { reload: true }));
+        if (['coleccion', 'novedades', 'tienda', 'campana'].includes(view)) action(null, () => go(null, { reload: true }));
     }
     refreshClocks();
 }, 1000);
