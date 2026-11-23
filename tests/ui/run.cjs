@@ -140,7 +140,7 @@ async function crm(admin){
     await click(admin,'[data-tab="contacts"]');await until(()=>admin.d.querySelector('#contact-list').textContent.includes('Sin mensajes'),'contactos vacíos');
     await click(admin,'[data-tab="users"]');await until(()=>admin.d.querySelector('#user-list .list-item'),'equipo CRM');
     await click(admin,'[data-tab="dashboard"]');await click(admin,'#refresh-metrics');
-    const rolesLink=admin.d.querySelector('a[href="/erp#users"]');assert(rolesLink);await admin.close();await admin.page(rolesLink.getAttribute('href'),'erp');await until(()=>admin.d.querySelector('#user-rows tr'),'enlace CRM a roles ERP');
+    const rolesLink=admin.d.querySelector('a[href="/gestion/operaciones#users"]');assert(rolesLink);await admin.close();await admin.page(rolesLink.getAttribute('href'),'erp');await until(()=>admin.d.querySelector('#user-rows tr'),'enlace CRM a roles ERP');
     passed('CRM: alta, edición, historial, interacción, evaluación, etapa, Mi actividad, eliminación, contactos, equipo y actualizar');
 }
 async function scm(admin){
@@ -181,7 +181,7 @@ async function scm(admin){
     passed('SCM: proveedores alta/editar/duplicado/eliminar, productos alta/editar/archivar, Push/Pull, movimientos, búsqueda/pedido/surtir, madurez, actualizar y CSV');
 }
 async function storefront(admin){
-    await admin.close();await admin.page('/','storefront');
+    await admin.close();await admin.page('/tienda/clasica','storefront');
     admin.w.eval(fs.readFileSync(path.join(root,'node_modules/alpinejs/dist/cdn.js'),'utf8'));
     await until(()=>admin.w.Alpine?.$data(admin.d.body).ready,'Alpine tienda');
     const app=admin.w.Alpine.$data(admin.d.body);

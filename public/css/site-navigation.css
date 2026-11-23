@@ -1,0 +1,23 @@
+.site-head {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr) max-content;
+    align-items: center;
+    gap: clamp(.65rem, 2vw, 2rem);
+    min-height: 87px;
+    padding: .75rem var(--gutter, clamp(1rem, 3.5vw, 4rem));
+    background: var(--paper, #f8f8f6);
+    border-bottom: 1px solid var(--line, #e5e5e5);
+}
+.brand { color: #0a0a0a; text-decoration: none; display: flex; flex-direction: column; align-items: flex-start; line-height: 1; }
+.brand strong { display: block; font-size: clamp(1.68rem, 2.9vw, 2.65rem); letter-spacing: -.083em; word-spacing: .08em; font-weight: 900; transform: scaleX(.94); transform-origin: left; }
+.brand span { display: block; margin-top: .4rem; font: 700 .60rem/1 var(--mono, ui-monospace, monospace); letter-spacing: .11em; white-space: nowrap; }
+.site-nav { display: flex; align-items: center; justify-content: center; gap: clamp(.55rem, 1.4vw, 1.75rem); }
+.site-nav a { color: #0a0a0a; text-decoration: none; font-size: clamp(.53rem, .78vw, .73rem); line-height: 1.3; font-weight: 850; letter-spacing: .026em; text-transform: uppercase; white-space: nowrap; padding-block: .45rem; border-bottom: 1px solid transparent; }
+.site-nav a[aria-current], .site-nav a:hover { border-color: currentColor; }
+
+@media (max-width: 1070px) {
+    .site-head { grid-template-columns: 1fr auto; min-height: 0; gap: .5rem 1rem; }
+    .site-nav { grid-row: 2; grid-column: 1 / -1; justify-content: flex-start; flex-wrap: wrap; gap: .35rem .9rem; padding-top: .35rem; border-top: 1px solid var(--line); }
+    .site-nav a { font-size: .65rem; }
+    .site-head > :last-child { grid-column: 2; grid-row: 1; }
+}

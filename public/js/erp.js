@@ -175,8 +175,15 @@
     async function panel(id) {
         if(!document.getElementById(id)?.classList.contains('panel')) id='dashboard';
         $$('.panel').forEach(el=>el.hidden=el.id!==id);
-        $$('[data-panel]').forEach(b=>{if(b.dataset.panel===id)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
-        history.replaceState(null,'','#'+(id==='success'?'orders':id));
+        const section = id === 'success' ? 'orders' : id;
+        $$('.management-subnav [data-panel]').forEach(button => {
+            if (button.dataset.panel === section) button.setAttribute('aria-current', 'page');
+            else button.removeAttribute('aria-current');
+        });
+        const fragment = section === 'dashboard' ? '' : '#' + section;
+        if (location.hash !== fragment) {
+            history.replaceState(null, '', location.pathname + location.search + fragment);
+        }
         if(id==='dashboard')await dashboard();
         if(id==='orders')await orders(1);
         if(id==='new'){step(state.step);await Promise.all([clients(),catalog()]);}
@@ -238,5 +245,8 @@
             else if(form.getAttribute('id')==='maturity-form'){const checklist={};Object.keys(evidenceLabels).forEach(k=>checklist[k]=form.elements[k].checked);await HF.request('/erp/estado','PUT',{nivel:form.elements.nivel.value,checklist});await maturity();notice('Nivel ERP actualizado.');}
         });
     });
-    run(null,()=>panel(location.hash.slice(1)||'dashboard'));
+    const requestedPanel = location.hash.slice(1);
+    const initialPanel = $$('.management-subnav [data-panel]').some(button => button.dataset.panel === requestedPanel)
+        ? requestedPanel : 'dashboard';
+    run(null, () => panel(initialPanel));
 })();

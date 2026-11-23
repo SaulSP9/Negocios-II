@@ -44,6 +44,10 @@ class CrmController extends Controller
     public function destroy(Cliente $cliente)
     {
         abort_if(\App\Models\Orden::where('cliente_id', $cliente->id)->exists(), 409, 'El cliente tiene órdenes ERP. Cámbialo a inactivo para conservar su historial.');
+        abort_if(\App\Models\TicketAtencion::where('cliente_id', $cliente->id)->exists()
+            || \App\Models\Monedero::where('cliente_id', $cliente->id)->exists()
+            || \App\Models\User::where('cliente_id', $cliente->id)->exists(), 409,
+            'El cliente tiene una cuenta o historial comercial. Cámbialo a inactivo para conservar su historial.');
         $cliente->delete();
 
         return response()->noContent();

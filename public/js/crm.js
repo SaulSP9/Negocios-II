@@ -27,7 +27,11 @@
     }
     async function tab(id) {
         document.querySelectorAll('.tab').forEach(s=>s.hidden=s.id!==id);
-        document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('selected',b.dataset.tab===id));
+        const section = id === 'detail' ? 'clients' : id;
+        document.querySelectorAll('.management-subnav [data-tab]').forEach(button => {
+            if (button.dataset.tab === section) button.setAttribute('aria-current', 'page');
+            else button.removeAttribute('aria-current');
+        });
         if(id==='dashboard') await metrics();
         if(id==='clients') await clients(1);
         if(id==='activity') await activity(1);

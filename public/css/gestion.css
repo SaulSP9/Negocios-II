@@ -1,0 +1,141 @@
+html:has(.management-head) { scrollbar-gutter: stable; }
+
+.management-head {
+    --management-gutter: clamp(16px, 3.2vw, 56px);
+    min-height: 76px;
+    padding: 10px var(--management-gutter);
+    gap: 16px;
+    border-bottom: 1px solid #deded9;
+    background: #f8f8f6;
+    color: #0a0a0a;
+    font: 15px/1.3 Inter, Arial, sans-serif;
+}
+.management-head > .brand { padding: 0; }
+.management-head > .brand strong { font-size: clamp(25px, 3vw, 39px); white-space: nowrap; }
+.management-head > .brand span { margin-top: 6px; font: 700 9px/1 ui-monospace, monospace; letter-spacing: .11em; }
+.management-head .gestion-menu {
+    min-width: 0;
+    flex-wrap: nowrap;
+    justify-content: safe center;
+    gap: clamp(12px, 1.3vw, 23px);
+    overflow-x: auto;
+    margin: 0;
+    padding: 0;
+    scrollbar-width: thin;
+    background: transparent;
+    border: 0;
+}
+.management-head .gestion-menu a {
+    flex: none;
+    padding: 9px 0;
+    background: transparent;
+    border-radius: 0;
+    color: #0a0a0a;
+    font-size: 10px;
+}
+.management-account {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+}
+.management-account span {
+    max-width: 170px;
+    overflow: hidden;
+    color: #575754;
+    font-size: 10px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.management-account .management-logout {
+    margin: 0;
+    min-height: 39px;
+    padding: 9px 13px;
+    background: #0a0a0a;
+    color: #fff;
+    border: 1px solid #0a0a0a;
+    border-radius: 0;
+    white-space: nowrap;
+    font: 850 10px/1.35 Inter, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    cursor: pointer;
+}
+.management-account .management-logout:hover { background: #303030; color: #fff; }
+
+.management-subnav {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 8px clamp(16px, 3.2vw, 56px);
+    overflow-x: auto;
+    scrollbar-width: thin;
+    background: #fff;
+    border-bottom: 1px solid #deded9;
+}
+.management-subnav button {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    min-height: 38px;
+    border-radius: 0;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #0a0a0a;
+    padding: 7px 12px;
+    font: 800 11px/1.3 Inter, Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.management-subnav button:hover { border-color: #0a0a0a; background: #fff; }
+.management-subnav button:is([aria-current="page"], [aria-selected="true"]) {
+    background: #0a0a0a;
+    color: #fff;
+    border-color: #0a0a0a;
+}
+.management-head :focus-visible, .management-subnav :focus-visible {
+    outline: 2px solid #6e513e;
+    outline-offset: -2px;
+}
+
+.management-content {
+    width: min(100%, 1520px);
+    min-width: 0;
+    margin-inline: auto;
+    padding: clamp(24px, 3vw, 44px) clamp(16px, 3.2vw, 56px) 56px;
+}
+.gestion-workspace main :is(.card, article, .kpi) { border-color: #e5e5e5; border-radius: 0; }
+.gestion-workspace main .primary { background: #0a0a0a; border-color: #0a0a0a; color: #fff; }
+.gestion-workspace main .primary:hover { background: #303030; }
+.gestion-workspace main :is(.heading, .page-heading, .page-title) h1 {
+    font-family: Inter, Arial, sans-serif;
+    font-weight: 900;
+    letter-spacing: -.065em;
+}
+.gestion-workspace :is(.eyebrow, .hint) { color: #575754; }
+.operation-lead .gestion-menu { justify-content: flex-start; padding: 1rem; align-content: center; }
+
+.management-commerce-heading h1 {
+    font-size: clamp(30px, 3.8vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -.055em;
+    font-weight: 900;
+    margin-bottom: clamp(18px, 2.4vw, 32px);
+}
+
+@media (max-width: 1070px) {
+    .management-head { gap: 8px 16px; }
+    .management-head .gestion-menu {
+        padding-top: 4px;
+        border-top: 1px solid #deded9;
+        justify-content: flex-start;
+    }
+}
+@media (max-width: 680px) {
+    .management-account span { display: none; }
+}

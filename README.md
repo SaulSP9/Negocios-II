@@ -1,8 +1,10 @@
-# HFSTUDIOS · CRM + SCM + ERP
+# HF Studios. · CRM + SCM + ERP + Tienda
 
-Laravel 12 / PHP 8.2+. Tienda, CRM, SCM y ERP con clientes y catálogo compartidos.
+Laravel 12. Los módulos comparten clientes, catálogo e inventario. Esta edición de la Unidad 4 se validó con PHP 8.4.27.
 
-- [Instalación y actualización en Laragon](docs/ERP_U3.md).
+- [Inicio rápido para la entrega U4](docs/TIENDA_U4.md).
+
+- [Instalación y actualización en Laragon](docs/TIENDA_U4.md#laragon).
 - [Matriz del PDF y evidencias](docs/MATRIZ_U3.md).
 - [Recorrido de presentación](docs/PRESENTACION_U3.md).
 - [Validación y alcance de las pruebas](docs/VALIDACION_U3.md).
@@ -11,22 +13,19 @@ Laravel 12 / PHP 8.2+. Tienda, CRM, SCM y ERP con clientes y catálogo compartid
 
 ## Instalación nueva
 
-Con PHP 8.2+ y Node compatible con Vite 7 (20.19+ o 22.12+):
+Usa PHP 8.2 o superior con Composer. La entrega incluye los recursos compilados. Para recompilarlos, usa Node.js compatible con Vite 7 (20.19+ o 22.12+).
 
 ```bat
 composer install
-npm ci
 php -r "file_exists('.env') || copy('.env.example', '.env');"
 php artisan key:generate
 php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"
 php artisan migrate --seed
-npm run build
-php artisan hf:crear-usuario --role=admin
 php artisan hf:diagnostico
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-Abre `http://127.0.0.1:8000/?vista=login`. La cuenta usa la contraseña que escribas. El equipo entra a `/erp`; el registro público crea clientes de tienda.
+Abre `http://127.0.0.1:8000/?vista=cuenta`. Consulta los accesos de demostración en la [guía de la Unidad 4](docs/TIENDA_U4.md#accesos-de-demostración). El personal entra a `/gestion`. El registro público crea cuentas de cliente.
 
 ## Actualizar una instalación existente
 
@@ -34,15 +33,12 @@ Copia los archivos de actualización sobre la carpeta que contiene `artisan`, co
 
 ```bat
 composer install
-npm ci
-php artisan config:clear
-php artisan migrate
 php artisan optimize:clear
-npm run build
-php artisan hf:diagnostico
+php artisan migrate
+php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-Después recarga con Ctrl+F5.
+Después recarga con Ctrl+F5. Si editas los recursos de Vite, ejecuta `npm ci` y `npm run build`.
 
 ## Demostración y pruebas
 
@@ -57,3 +53,7 @@ El comando demo solicita una contraseña y agrega cuentas de administrador, vent
 Las pruebas de interfaz usan eventos DOM/Alpine y HTTP real contra Laravel en SQLite temporal. Consulta el informe para los resultados y sus límites.
 
 La tienda registra pedidos y comprobantes internos. Cobros bancarios, facturas fiscales y envío de correos requieren servicios externos.
+
+## Entrega Unidad 4
+
+La tienda editorial abre en `/` y el menú para el personal en `/gestion`. Consulta la [guía de instalación, demostración y rutas](docs/TIENDA_U4.md), la [matriz de validación](docs/VALIDACION_U4.md) y los [resultados de pruebas](docs/RESULTADOS_PRUEBAS_U4.txt).

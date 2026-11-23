@@ -37,7 +37,10 @@
     }
     function tab(id) {
         document.querySelectorAll('.panel').forEach(el => el.hidden = el.id !== id);
-        document.querySelectorAll('[data-tab]').forEach(el => {if (el.dataset.tab === id) el.setAttribute('aria-current','page'); else el.removeAttribute('aria-current');});
+        document.querySelectorAll('.management-subnav [data-tab]').forEach(button => {
+            if (button.dataset.tab === id) button.setAttribute('aria-current', 'page');
+            else button.removeAttribute('aria-current');
+        });
     }
     function open(id) {$(id).showModal();}
     function close(id) {$(id).close();}

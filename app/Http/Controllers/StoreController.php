@@ -7,7 +7,9 @@ use App\Models\Cliente;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Publication;
+use App\Services\ErpOrders;
 use App\Services\InventoryService;
+use App\Support\Editorial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -56,7 +58,14 @@ class StoreController extends Controller
 
     public function orders(Request $request)
     {
-        return Order::with(['items', 'user'])->when($request->user()->role !== 'admin', fn ($q) => $q->where('user_id', $request->user()->id))->latest('id')->get()->map->presentation();
+        return Order::with(['items', 'user', 'pago', 'cargoEnMonedero'])->when($request->user()->role !== 'admin', fn ($q) => $q->where('user_id', $request->user()->id))->latest('id')->get()->map->presentation();
+    }
+
+    public function showOrder(Request $request, Order $order)
+    {
+        abort_unless($order->user_id === $request->user()->id || $request->user()->hasPermission('commerce.orders'), 404);
+
+        return $order->presentation();
     }
 
     public function checkout(Request $request, InventoryService $inventory)
@@ -97,13 +106,22 @@ class StoreController extends Controller
         });
     }
 
-    public function orderStatus(Request $request, Order $order, InventoryService $inventory)
+    public function orderStatus(Request $request, Order $order, InventoryService $inventory, ErpOrders $erp)
     {
         $data = $request->validate(['status' => 'required|in:Enviado,Entregado,Cancelado']);
 
+        if ($order->orden_empresarial_id && $data['status'] !== 'Enviado') {
+            if ($data['status'] === 'Entregado') {
+                abort_unless($order->status === 'Enviado', 422, 'Primero registra el envío.');
+            }
+            $erp->changeState($order->orden_empresarial_id, $data['status'] === 'Entregado' ? 'completada' : 'cancelada', $request->user());
+
+            return $order->fresh()->presentation();
+        }
+
         return DB::transaction(function () use ($data, $order, $inventory, $request) {
             $order = Order::lockForUpdate()->findOrFail($order->id);
-            $allowed = ['Pendiente' => ['Enviado', 'Cancelado'], 'Enviado' => ['Entregado'], 'Entregado' => [], 'Cancelado' => []];
+            $allowed = ['Pagado' => ['Enviado'], 'Pendiente' => ['Enviado', 'Cancelado'], 'Enviado' => ['Entregado'], 'Entregado' => [], 'Cancelado' => []];
             abort_unless(in_array($data['status'], $allowed[$order->status] ?? [], true), 422, 'Transición de pedido no permitida.');
             if ($data['status'] === 'Cancelado') {
                 foreach ($order->items()->orderBy('product_id')->get() as $item) {
@@ -120,7 +138,7 @@ class StoreController extends Controller
     public function stats()
     {
         return ['sales' => '$'.number_format(Order::where('status', '!=', 'Cancelado')->sum('total_cents') / 100, 2),
-            'orders' => Order::whereIn('status', ['Pendiente', 'Enviado'])->count(), 'users' => Cliente::count()];
+            'orders' => Order::whereIn('status', ['Pendiente', 'Pagado', 'Enviado'])->count(), 'users' => Cliente::count()];
     }
 
     public function publications(Request $request)
@@ -172,7 +190,7 @@ class StoreController extends Controller
         }
 
         return ['id' => $auction->id, 'timerSeconds' => max(0, (int) now()->diffInSeconds($auction->ends_at, false)),
-            'product' => ['name' => $auction->name, 'image' => $auction->image, 'currentBid' => $auction->current_bid_cents / 100],
+            'product' => ['name' => $auction->name, 'image' => str_starts_with(ltrim($auction->image, '/'), Editorial::ROOT) ? asset(ltrim($auction->image, '/')) : $auction->image, 'currentBid' => $auction->current_bid_cents / 100],
             'offers' => DB::table('bids')->join('users', 'users.id', '=', 'bids.user_id')->where('auction_id', $auction->id)->orderByDesc('bids.id')->limit(50)->get(['users.name as user', 'amount_cents'])->map(fn ($b) => ['user' => $b->user, 'amount' => $b->amount_cents / 100])];
     }
 
