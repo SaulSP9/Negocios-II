@@ -6,11 +6,11 @@
 | --- | --- | --- |
 | 1 · CRM | Clientes, etapas, historial, roles y métricas. Apertura y respuesta de tickets registradas en el historial. | `CrmTest`, `EcommerceU4Test`, `/gestion/clientes`. |
 | 2 · SCM | Inventario común, movimientos, reglas PUSH/PULL, reposición bajo umbral y submenú de reportes. | `ScmTest`, `EcommerceU4Test`, `/gestion/inventario`. |
-| 3 · ERP | Orden vinculada al cliente CRM y a la operación de salida. Cancelación sincronizada con la tienda. | `ErpTest`, `EcommerceU4Test`, `/gestion/operaciones`. |
+| 3 · ERP | Orden vinculada al cliente CRM y a la operación de salida. Cancelación sincronizada con la tienda. Las compras enlazadas se cuentan una vez en el importe, la serie mensual y las unidades aun después del envío o la entrega. | `ErpTest`, `EcommerceU4Test`, `/gestion/operaciones`. |
 | 4.1.1 · Catálogo | Filtros por familia y nombre, ordenamiento, favoritos locales y ficha por ID con galería, talla y stock. | `EcommerceU4Test` y `/catalogo`. |
 | 4.1.2 · Pagos | Cálculo en servidor, validación de stock, pago único, entrega, pedido, salida de inventario, checkout y recibo en páginas propias, y confirmación por correo. | `EcommerceU4Test`, `POST /pagos/procesar`. |
 | 4.1.3 · Carrito | Persistencia, traspaso del carrito de invitado, incremento, decremento, borrado y aislamiento por cliente. | `EcommerceU4Test`, panel Carrito. |
-| 4.1.4 · Comercialización | Ofertas vigentes por fechas, categoría o producto, mejor descuento, precios visibles y cuenta regresiva. | `EcommerceU4Test`, carrusel y Campaña. |
+| 4.1.4 · Comercialización | Ofertas vigentes por fechas, categoría o producto, mejor descuento, precios visibles, cuenta regresiva, destacados y sección propia de Novedades con los últimos productos activos. | `EcommerceU4Test`, carrusel, Campaña y `/?vista=novedades`. |
 | 4.1.5 · Impuestos | IVA 16% al instalar, configuración restringida y desglose. | `EcommerceU4Test`, panel Impuestos. |
 | 4.1.6 · Atención | Creación por categoría, filtros, historial de actualizaciones, respuesta por personal autorizado y seguimiento en CRM. | `EcommerceU4Test`, Ayuda y Atención. |
 | 4.2 · Base de datos | Llaves foráneas, restricciones y conservación de tablas de las etapas 1–3. | Migración `2026_11_22_000001_add_ecommerce_u4.php`. |
@@ -21,11 +21,12 @@
 ## Validación reproducible
 
 ```sh
-php artisan migrate:fresh --seed
-php artisan hf:verificar-imagenes
-php artisan test
 npm ci
 npm run build
+php artisan migrate:fresh --seed
+php artisan hf:diagnostico
+php artisan hf:verificar-imagenes
+php artisan test
 npm run test:ui
 ```
 

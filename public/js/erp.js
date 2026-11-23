@@ -41,9 +41,9 @@
     }
     function kpis(m) {
         return [
-            ['Ventas totales',money(m.ventas_totales),'ERP + tienda surtida'],
+            ['Ventas totales',money(m.ventas_totales),'Importe consolidado'],
             ['Órdenes ERP',m.ordenes_procesadas,'Procesadas y completadas'],
-            ['Productos vendidos',m.productos_vendidos,'Unidades ERP + tienda'],
+            ['Productos vendidos',m.productos_vendidos,'Unidades consolidadas'],
             ['Clientes activos',m.clientes_activos,'Directorio del CRM'],
             ['Inventario disponible',m.inventario_disponible,'Unidades en SCM']
         ].map(r=>'<div class="kpi"><span>'+r[0]+'</span><strong>'+esc(r[1])+'</strong><small>'+r[2]+'</small></div>').join('');

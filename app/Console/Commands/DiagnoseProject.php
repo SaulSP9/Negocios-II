@@ -23,7 +23,11 @@ class DiagnoseProject extends Command
         };
         $check('PHP 8.2 o superior', PHP_VERSION_ID >= 80200);
         $check('Clave de aplicación', filled(config('app.key')));
-        $check('Archivos de tienda compilados', file_exists(public_path('build/manifest.json')));
+        $compiled = file_exists(public_path('build/manifest.json'));
+        $check('Archivos de tienda compilados', $compiled);
+        if (! $compiled) {
+            $this->line('Para compilar los recursos del clon, ejecuta npm ci y npm run build.');
+        }
         try {
             DB::connection()->getPdo();
             $this->line('Conexión: '.config('database.default').' | Base: '.DB::connection()->getDatabaseName());
@@ -42,7 +46,7 @@ class DiagnoseProject extends Command
         foreach (['crm', 'scm', 'erp', 'clientes', 'productos', 'proveedores', 'ordenes', 'ordenes/procesar', 'erp/metricas', 'erp/estado', 'auth/login', 'usuarios/rol'] as $uri) {
             $check('Ruta /'.$uri, in_array($uri, $routes, true));
         }
-        $this->line($ok ? 'Proyecto preparado para la revisión funcional.' : 'Corrige los puntos FALTA. Consulta docs/ERP_U3.md y ejecuta php artisan migrate.');
+        $this->line($ok ? 'Proyecto preparado para la revisión funcional.' : 'Consulta docs/TIENDA_U4.md para resolver los puntos marcados como FALTA.');
 
         return $ok ? self::SUCCESS : self::FAILURE;
     }

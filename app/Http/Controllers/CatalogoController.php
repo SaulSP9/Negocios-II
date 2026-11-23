@@ -34,7 +34,11 @@ class CatalogoController extends Controller
                 ->whereIn('orders.status', ['Pagado', 'Enviado', 'Entregado'])])
                 ->orderByDesc('unidades_vendidas');
         }
-        $query->orderBy('id', $order === 'nuevos' ? 'desc' : 'asc');
+        if ($order === 'nuevos') {
+            $query->orderByDesc('created_at')->orderByDesc('id');
+        } else {
+            $query->orderBy('id');
+        }
         $promotions = $pricing->promotions();
         $products = $query->get()->map(fn ($product) => $pricing->present($product, $promotions));
         if (in_array($order, ['precio-asc', 'precio-desc'], true)) {

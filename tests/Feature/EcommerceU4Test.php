@@ -36,6 +36,22 @@ class EcommerceU4Test extends TestCase
         $this->getJson('/catalogo/'.$hidden->id)->assertNotFound();
     }
 
+    public function test_new_arrivals_are_accessible_and_sorted_by_catalog_addition_date(): void
+    {
+        $new = $this->product(['name' => 'Hoodie nuevo']);
+        $older = $this->product(['name' => 'Hoodie anterior']);
+        $older->forceFill(['created_at' => now()->subDay()])->save();
+        $this->product(['name' => 'Hoodie oculto', 'active' => false]);
+
+        $this->get('/?vista=novedades')->assertOk()
+            ->assertSee('data-view-link="novedades"', false)
+            ->assertSee('id="new-arrival-products"', false);
+        $this->getJson('/catalogo?orden=nuevos')->assertOk()
+            ->assertJsonCount(2, 'productos')
+            ->assertJsonPath('productos.0.id', $new->id)
+            ->assertJsonPath('productos.1.id', $older->id);
+    }
+
     public function test_cart_persists_sizes_and_rejects_other_customers_and_combined_overstock(): void
     {
         [$customer, $client] = $this->customer();
@@ -137,6 +153,60 @@ class EcommerceU4Test extends TestCase
         $this->assertDatabaseMissing('movimientos_inventario', ['tipo' => 'salida']);
         $this->assertDatabaseCount('carrito_detalle', 2);
         $this->assertSame(5, $first->fresh()->stock);
+    }
+
+    public function test_linked_store_sale_counts_once_in_erp_when_shipped_and_delivered(): void
+    {
+        config(['commerce.simulate_payments' => true]);
+        [$buyer] = $this->customer();
+        $product = $this->product();
+        $this->actingAs($buyer)->add($product, 1)->assertOk();
+        $orderId = $this->postJson('/pagos/procesar', $this->payment())->assertCreated()
+            ->assertJsonPath('total', 116)->json('database_id');
+
+        $this->actingAs($this->staff('admin'))->getJson('/erp/metricas')->assertOk()
+            ->assertJsonPath('ventas_totales_cents', 11600)
+            ->assertJsonPath('productos_vendidos', 1)
+            ->assertJsonPath('pedidos_tienda_surtidos', 0);
+
+        foreach (['Enviado', 'Entregado'] as $status) {
+            $this->putJson('/tienda/pedidos/'.$orderId.'/estado', ['status' => $status])
+                ->assertOk()->assertJsonPath('status', $status);
+            $this->getJson('/erp/metricas')->assertOk()
+                ->assertJsonPath('ventas_totales_cents', 11600)
+                ->assertJsonPath('ventas_erp_cents', 11600)
+                ->assertJsonPath('ventas_tienda_cents', 0)
+                ->assertJsonPath('ventas_por_mes.5.total_cents', 11600)
+                ->assertJsonPath('productos_vendidos', 1)
+                ->assertJsonPath('productos_mas_vendidos.0.unidades', 1)
+                ->assertJsonPath('pedidos_tienda_surtidos', 1);
+        }
+
+        $this->postJson('/erp/reportes')->assertCreated()
+            ->assertJsonPath('resumen.ventas_totales_cents', 11600)
+            ->assertJsonPath('resumen.productos_vendidos', 1);
+        $this->assertDatabaseCount('pagos', 1);
+        $this->assertSame(4, $product->fresh()->stock);
+    }
+
+    public function test_fulfilled_store_orders_without_an_erp_link_remain_in_sales(): void
+    {
+        [$buyer] = $this->customer();
+        $product = $this->product();
+        $legacyOrder = $this->actingAs($buyer)->postJson('/tienda/pedidos', [
+            ...$this->payment(),
+            'items' => [['id' => $product->id, 'quantity' => 2]],
+        ])->assertCreated()->json('database_id');
+
+        $this->actingAs($this->staff('admin'))->getJson('/erp/metricas')->assertOk()
+            ->assertJsonPath('ventas_totales_cents', 0);
+        $this->putJson('/tienda/pedidos/'.$legacyOrder.'/estado', ['status' => 'Enviado'])->assertOk();
+        $this->getJson('/erp/metricas')->assertOk()
+            ->assertJsonPath('ventas_totales_cents', 20000)
+            ->assertJsonPath('ventas_tienda_cents', 20000)
+            ->assertJsonPath('ventas_por_mes.5.total_cents', 20000)
+            ->assertJsonPath('productos_vendidos', 2)
+            ->assertJsonPath('pedidos_tienda_surtidos', 1);
     }
 
     public function test_wallet_debit_and_erp_cancellation_refund_each_occur_once(): void

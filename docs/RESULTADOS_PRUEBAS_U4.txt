@@ -1,29 +1,30 @@
 HF STUDIOS. / RESULTADOS DE LA UNIDAD 4
 
-Edición Mi cuenta y gestión empresarial
+Entrega corregida
 22 de noviembre de 2026 (Ciudad de México)
 
 Entorno de prueba
   PHP 8.4.27, Laravel 12, SQLite, Node.js 24 y Chromium.
-  php artisan migrate:fresh --seed    APROBADO en base temporal
-  php artisan hf:verificar-imagenes    23 de 23 referencias válidas
-  php artisan test                   66 pruebas aprobadas, 629 aserciones
+
+  npm ci                              APROBADO desde package-lock.json
   npm run build                       APROBADO
+  php artisan migrate:fresh --seed    APROBADO en base temporal
+  php artisan hf:diagnostico          APROBADO
+  php artisan hf:verificar-imagenes    24 de 24 referencias válidas
+  php artisan test                   69 pruebas aprobadas, 678 aserciones
   npm run test:ui                     10 grupos aprobados
 
-Recorridos en Chromium
-  1. Inicio de sesión, registro, recuperación y conservación del retorno al pago.
-  2. Perfil, monedero, pedidos y tickets en vistas independientes, con enlaces
-     directos, regreso y avance en el historial del navegador.
-  3. Guardado del perfil, recarga de demostración y seguimiento de un ticket.
-  4. CRM, SCM, ERP y Tienda y atención. Los 23 apartados se recorrieron a 1260
-     y 390 px. El encabezado y el submenú conservaron sus dimensiones y solo
-     quedó visible el apartado seleccionado.
-  5. Navegación de vuelta a la tienda y menús autorizados para Logística.
-  6. Ficha de producto con miniaturas, talla y cantidad, carrito, checkout,
-     pago con monedero, recibo recargable e historial. Verificación móvil
-     de ficha, checkout y Mi cuenta.
+Comprobaciones de la entrega
+  1. Novedades abre desde el menú y muestra los productos activos más recientes.
+     Se verificó a 390, 1071 y 1365 px y al volver desde el catálogo completo.
+  2. Una compra de $116 MXN por una unidad conserva el mismo importe y las
+     mismas unidades en el ERP al marcarla como Enviado y Entregado.
+  3. La serie mensual, el ranking, el nuevo corte y el stock coinciden con la
+     compra única. Los pedidos surtidos sin orden ERP se siguen contabilizando.
+  4. En Chromium se recorrió ficha, carrito de invitado, inicio de sesión,
+     pago con monedero, recibo y Mis pedidos. Se comprobó el menú de CRM,
+     SCM, ERP y Tienda y atención, así como la ficha y el checkout en móvil.
 
-Esta edición utiliza las mismas migraciones de Ficha y Checkout.
+Los cortes ERP ya guardados conservan la información de su fecha de emisión.
+Esta edición usa las mismas migraciones que Cuenta y Gestión.
 Tarjeta, PayPal, transferencia y recargas del cliente son simulaciones.
-Las miniaturas de una ficha muestran encuadres de su fotografía disponible.
